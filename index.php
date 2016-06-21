@@ -17,7 +17,6 @@
 
 <body>
 
-
 <!------------------------------------------------------>
 <div class="siteContainer">
 
@@ -268,7 +267,7 @@
 <div class="copyRight">
     <div class="sawLine"></div>
     <small>
-        Made by |} {}. 2016
+        Made by |} {} & /| {}. 2016
     </small>
 
 </div>
