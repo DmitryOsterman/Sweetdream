@@ -1,16 +1,14 @@
 <?php
-
+require_once('./db.init');
 function InitDbMenu()
 {
-    $user = "admin_sd";
-    $pass = "df9(s1";
     global $tbl;
     $tbl = 'upmenu';
     global $dbh;
     try {
         if (!$dbh) {
 //            $dbh = new PDO('mysql:host=localhost;dbname=sweetdream', $user, $pass, array(PDO::ATTR_PERSISTENT => true));
-            $dbh = new PDO('mysql:host=localhost;dbname=sweetdream', $user, $pass);
+            $dbh = new PDO('mysql:host=localhost;dbname=sweetdream', DB_USER, DB_PASSWORD);
             $dbh->query("SET NAMES UTF8");
         }
     } catch (PDOException $e) {
