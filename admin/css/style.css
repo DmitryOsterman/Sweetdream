@@ -1,0 +1,163 @@
+/*-------------  рамки. Позже - убрать-------------*/
+.userMenuContainer, .upMenu, .catalogContainer, .siteContainer,
+.searchGoods, .goodsContainer, .topSale, .topSaleContainer, .reviewContainer,
+.footerContainer {
+    /* border: 1px dashed darkred; */
+}
+
+body {
+    background-color: #e0f4ef;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+h1 {
+    padding-left: 10px;
+    padding-top: 10px;
+    margin: 0;
+}
+
+.siteContainer {
+    width: 1024px;
+    margin: 0 auto;
+    background-color: #e6faf5;
+}
+
+.titleSite {
+    float: left;
+    width: 400px;
+    padding: 10px;
+    color: #553e34;
+}
+
+.titleSite b {
+    color: green;
+}
+
+.store {
+    clear: both;
+    /*min-height: 300px;*/
+    margin: 0;
+    padding: 0;
+}
+
+.upMenu {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+    background-color: blue;
+
+    box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
+}
+
+.upMenu li {
+    display: inline-block;
+    width: auto;
+}
+
+.upMenu a {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 40px;
+    color: white;
+    text-decoration: none;
+    border-left: 2px solid darkblue;
+}
+
+.upMenu a:hover {
+    background: #F5F5F5;
+    color: green;
+}
+
+.menuEditor {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/*--------------------------------------------------*/
+
+.myMenu>li {
+    text-align: center;
+    display: inline-block;
+    width: auto;
+    margin: 0 auto;
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    border: 1px solid #48342a;
+    background-color: #553e34;
+    position: relative;
+}
+
+.myMenu>li:hover {
+    background-color: #F5F5F5;
+    color: #795a4d;
+}
+
+/*--------------------------------------------------*/
+
+.controls {
+    display: none;
+}
+.myMenu>li:hover .controls {
+    display: block;
+
+}
+
+/*--------------------------------------------------*/
+.controls {
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    z-index: 10;
+    width: 150px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: #FCF8E3;
+}
+
+.controls li a{
+    display: block;
+    padding: 5px;
+    color: #795a4d;
+    text-decoration: none;
+    border: 1px solid #48342a;
+    background-color: #FCF8E3;
+
+}
+
+.controls a:hover {
+    background: #F5F5F5;
+    color: red;
+}
+
+/*================================================*/
+
+.copyRight {
+    margin-top: 50px;
+    text-align: center;
+    min-height: 28px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
