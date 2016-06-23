@@ -28,8 +28,8 @@ function AddUpMenuToEnd($str, $adr)
 
 function GetMenuItem($id)
 {
-    global $dbh;
     InitDbMenu();
+    global $dbh;
     global $tbl;
     $sql = "SELECT * FROM $tbl WHERE id=?";
     $sth = $dbh->prepare($sql);
@@ -37,21 +37,26 @@ function GetMenuItem($id)
     return $sth->fetch();
 }
 
-function EnableItemMenu($str)
+function EnableItemMenu($str, $myCol)
 {
-    global $dbh;
     InitDbMenu();
+    global $dbh;
     global $tbl;
-    $q = "SELECT * FROM $tbl WHERE `name` like '$str'";
+    $q = "SELECT * FROM $tbl WHERE `$myCol` like '$str'";
     $dbData = $dbh->prepare($q);
     $dbData->execute();
 
     $a = $dbData->fetchAll();
+    echo "<br>";
+    echo '$str='."$str";
+    echo "<br>";
     if (!$a == false) {
         foreach ($a as $row) {
-            if ($row[1] == $str) {
-                echo("<br>");
-                echo "Пункт меню - <b>$row[1]</b> - уже имеется. Введите другое имя";
+            if ($row[$myCol] == $str) {
+                echo "<br>";
+                echo $str;
+                echo "<br>";
+                echo "Пункт меню - <b>$row[$myCol]</b> - уже имеется. Введите другое имя";
                 echo("<br>");
                 return true;
             }
@@ -70,14 +75,15 @@ function DeleteItemFromUpMenu($idItem)
     $sth->execute([$idItem]);
 }
 
-function EditMenuItem($id, $name)
+function EditMenuItem($id, $name, $path)
 {
-    global $dbh;
     InitDbMenu();
+    global $dbh;
     global $tbl;
-    $sql = "UPDATE $tbl SET name=? WHERE id=?";
+    $sql = "UPDATE $tbl SET name=?, refer=? WHERE id=?";
     $sth = $dbh->prepare($sql);
-    $sth->execute([$name, $id]);
+    $sth->execute([$name, $path, $id]);
+    echo "new name: " . $name . " new path:" . $path;
 }
 
 function ShowUpMenu()
@@ -96,6 +102,7 @@ function ShowUpMenu()
                     <li><a onclick='return confirm("Вы действительно хотите удалить это меню?");'
                     href='?section=menu&Delete=$row[0]'>Delete </a></li>
 END;
+
         //        echo "<a href='/up/$row[2]'>Up </a>";
         //        echo "<a href='/Down/$row[2]'>Down </a>";
         echo "</ul>";
@@ -118,7 +125,9 @@ function ShowMenuForm($row = [])
             Путь:
             <input type="text" name="newItemLink" value="<?= isset($row['link']) ? 'link' : '' ?>">
         </label>
-        <input type="submit" value="<?= $row ? 'Edit' : 'Add' ?> item">
+        <!--        <input type="submit" value="--><? //= $row ? 'Edit' : 'Add' ?><!-- item">-->
+        <input type="submit" value="Add item">
     </form>
+
 <?php
 }
