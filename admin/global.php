@@ -48,7 +48,7 @@ function EnableItemMenu($str, $myCol)
 
     $a = $dbData->fetchAll();
     echo "<br>";
-    echo '$str='."$str";
+    echo '$str=' . "$str";
     echo "<br>";
     if (!$a == false) {
         foreach ($a as $row) {
@@ -80,7 +80,7 @@ function EditMenuItem($id, $name, $path)
     InitDbMenu();
     global $dbh;
     global $tbl;
-    $sql = "UPDATE $tbl SET name=?, refer=? WHERE id=?";
+    $sql = "UPDATE $tbl SET name=?, link=? WHERE id=?";
     $sth = $dbh->prepare($sql);
     $sth->execute([$name, $path, $id]);
     echo "new name: " . $name . " new path:" . $path;
@@ -115,7 +115,7 @@ function ShowMenuForm($row = [])
 {
     ?>
     <form action="<?= $_SERVER['PHP_SELF'] ?>?section=menu" method="POST">
-        <p>Введите пункт меню:</p>
+        <p>Добавьте пункт меню:</p>
         <input type="hidden" name="id" value="<?= isset($row['id']) ? $row['id'] : '' ?>">
         <label>
             Имя:
@@ -123,10 +123,10 @@ function ShowMenuForm($row = [])
         </label>
         <label>
             Путь:
-            <input type="text" name="newItemLink" value="<?= isset($row['link']) ? 'link' : '' ?>">
+            <input type="text" name="newItemLink" value="<?= isset($row['link']) ? $row['link'] : '' ?>">
         </label>
         <!--        <input type="submit" value="--><? //= $row ? 'Edit' : 'Add' ?><!-- item">-->
-        <input type="submit" value="Add item">
+        <input type="submit" value="<?= $row? 'Edit' : 'Add' ?> item">
     </form>
 
 <?php

@@ -10,10 +10,9 @@ include_once('global.php');
           content="text/html; charset=utf8">
     <meta name="description" lang="en" content="Setup the shop">
     <link rel="stylesheet" type="text/css" media="all" href="css/style.css">
-    <script type="text/javascript" src="js/mystyle.js"></script>
+    <!--    <script type="text/javascript" src="js/mystyle.js"></script>-->
 </head>
 <body>
-
 
 <!------------------------------------------------------>
 <div class="siteContainer">
@@ -31,19 +30,21 @@ include_once('global.php');
             <li><a href="#">Картинки</a></li>
         </ul>
 
-        <?php        
-		if (isset($_GET['section'])) {
+        <?php
+        if (isset($_GET['section'])) {
             switch ($_GET['section']) {
                 case 'menu':
                     require "menu.php";
                     break;
                 case 'goods':
                     require "goods.php";
-                    break;				
-				case 'main':
+                    break;
+                case 'main':
                     require "main.php";
-                    break;                
+                    break;
             }
+        } else {
+            require "main.php";
         }
         ?>
 
@@ -52,7 +53,6 @@ include_once('global.php');
                 Made by |} {}. 2016
             </small>
         </div>
-
     </div>
 </body>
 </html>

@@ -10,12 +10,10 @@ if ( // существуют и не пустые: Имя & Путь:
     &&
     (isset($_POST['itemLink']) && !empty($_POST['itemLink']))
 ) {
-    // add new Item Menu
+    // add NEW Item Menu in DB ""
     if (!EnableItemMenu($_POST['itemName'], "name")) {
         AddUpMenuToEnd($_POST['itemName'], $_POST['itemLink']);
     } // edit Item Menu
-
-
 }
 if (isset($_GET['edit'])) {
     echo "---------- разобраться -------- ";//test
