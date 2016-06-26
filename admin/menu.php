@@ -1,31 +1,36 @@
-﻿<div class="addItemMenu">
-    <?php showMenuForm(); ?>
-</div>
+﻿<?php
+ShowMenu();
 
-<?php
-ShowUpMenu();
+// существуют Имя & Путь:
+if (isset($_POST['itemName']) && isset($_POST['itemLink'])) {
 
-if ( // существуют и не пустые: Имя & Путь:
-    (isset($_POST['itemName']) && !empty($_POST['itemName']))
-    &&
-    (isset($_POST['itemLink']) && !empty($_POST['itemLink']))
-) {
-    // add NEW Item Menu in DB ""
-    if (!EnableItemMenu($_POST['itemName'], "name")) {
-        AddUpMenuToEnd($_POST['itemName'], $_POST['itemLink']);
-    } // edit Item Menu
+    if (isset($_POST['id']) && !empty($_POST['id'])) {
+        EditItemMenu($_POST['id'], $_POST['itemName'], $_POST['itemLink']);
+    } else {
+        if (IsEnableItemMenu($_POST['itemName'], 'name')) {
+            echo "Такой пункт уже имеется. Введите другое наименование";
+        } else {
+            AddItemMenu($_POST['itemName'], $_POST['itemLink']);
+        }
+    }
+// после редактирования меню, обновить:
+//    header('Location: ' . $_SERVER['PHP_SELF'] . '?section=menu');
+//    exit;
+
 }
+
 if (isset($_GET['edit'])) {
-    echo "---------- разобраться -------- ";//test
-    ShowMenuForm(GetMenuItem($_GET['edit']));
+
+    switch ($_GET['edit']) {
+        case 'add':
+            ShowEditForm(GetItemMenu($_GET['edit']), 'add');
+            break;
+        default:
+            ShowEditForm(GetItemMenu($_GET['edit']), 'edit');
+    }
+
 }
 
 if (isset($_GET['Delete'])) {
-    DeleteItemFromUpMenu($_GET['Delete']);
-
+    DeleteItemMenu($_GET['Delete']);
 }
-
-
-// после правки:
-// header('Location: ' . $_SERVER['PHP_SELF'] . '?section=menu');
-// exit;

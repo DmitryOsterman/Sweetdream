@@ -48,7 +48,7 @@ h1 {
     padding: 0;
     list-style: none;
     text-align: center;
-    background-color: blue;
+    background-color: cornflowerblue;
 
     box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
@@ -66,7 +66,7 @@ h1 {
     padding: 10px 40px;
     color: white;
     text-decoration: none;
-    border-left: 2px solid darkblue;
+    border-left: 2px solid lightblue;
 }
 
 .upMenu a:hover {
@@ -100,6 +100,16 @@ h1 {
     color: #795a4d;
 }
 
+.newItemMenu {
+    display: inline-block;
+}
+.newItemMenu a {
+    color: lightcoral;
+    text-decoration: none;
+}
+.newItemMenu a:hover {
+    color: red;
+}
 /*--------------------------------------------------*/
 
 .controls {
