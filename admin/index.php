@@ -1,4 +1,5 @@
 <?php
+ob_start();
 include_once('global.php');
 ?>
 
@@ -23,11 +24,11 @@ include_once('global.php');
 
     <div class="store">
 
-        <ul class="upMenu">
-            <li><a href="?section=main">Главная</a></li>
-            <li><a href="?section=menu">Меню</a></li>
-            <li><a href="?section=goods">Товары</a></li>
-            <li><a href="#">Картинки</a></li>
+        <ul class="upMenu"><li>
+			<a href="?section=main">Главная</a></li><li>
+			<a href="?section=menu">Меню</a></li><li>
+			<a href="?section=goods">Товары</a></li><li>
+			<a href="#">Картинки</a></li>
         </ul>
 
         <?php

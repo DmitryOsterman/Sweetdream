@@ -106,7 +106,7 @@ function ShowMenu()
         echo "<li><a href='?section=menu&edit=$row[0]'>Edit </a></li>";
         echo <<<END
                     <li><a onclick='return confirm("Вы действительно хотите удалить это меню?");'
-                    href='?section=menu&Delete=$row[0]'>Delete </a></li>
+                    href='?section=menu&delete=$row[0]'>Delete </a></li>
 END;
 
         //        echo "<a href='/up/$row[2]'>Up </a>";

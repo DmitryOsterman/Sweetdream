@@ -14,8 +14,9 @@ if (isset($_POST['itemName']) && isset($_POST['itemLink'])) {
         }
     }
 // после редактирования меню, обновить:
-//    header('Location: ' . $_SERVER['PHP_SELF'] . '?section=menu');
-//    exit;
+    header('Location: ' . $_SERVER['PHP_SELF'] . '?section=menu');
+    ob_end_flush();
+    exit;
 
 }
 
@@ -31,6 +32,10 @@ if (isset($_GET['edit'])) {
 
 }
 
-if (isset($_GET['Delete'])) {
-    DeleteItemMenu($_GET['Delete']);
+if (isset($_GET['delete'])) {
+    DeleteItemMenu($_GET['delete']);
+    // после удаления, обновить:
+    header('Location: ' . $_SERVER['PHP_SELF'] . '?section=menu');
+    ob_end_flush();
+    exit;
 }
