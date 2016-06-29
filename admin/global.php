@@ -1,13 +1,14 @@
 <?php
 require_once('./db.init');
-function InitDbMenu()
+function InitDbTable($myDBtable)
 {
     global $tbl;
-    $tbl = 'upmenu';
+    $tbl = $myDBtable;
+    $myDBname = DB_NAME;
     global $dbh;
     try {
         if (!$dbh) {
-            $dbh = new PDO('mysql:host=localhost;dbname=sweetdream', DB_USER, DB_PASSWORD);
+            $dbh = new PDO("mysql:host=localhost;dbname=$myDBname", DB_USER, DB_PASSWORD);
             $dbh->query("SET NAMES UTF8");
         }
     } catch (PDOException $e) {
@@ -16,18 +17,18 @@ function InitDbMenu()
     }
 }
 
-function AddItemMenu($name, $path)
+function AddMenuItem($myDBtable, $name, $path)
 {
+    InitDbTable($myDBtable);
     global $dbh;
     global $tbl;
-    InitDbMenu();
     $sql = "INSERT INTO $tbl VALUES (null, '$name', '$path')";
     $dbh->query($sql);
 }
 
-function GetItemMenu($id)
+function GetTableItem($myDBtable, $id)
 {
-    InitDbMenu();
+    InitDbTable($myDBtable);
     global $dbh;
     global $tbl;
     $sql = "SELECT * FROM $tbl WHERE id=?";
@@ -36,18 +37,18 @@ function GetItemMenu($id)
     return $sth->fetch();
 }
 
-function IsEnableItemMenu($name, $ColumnName)
+function IsEnTableItemByValue($myDBtable, $columnName, $columnValue )
 {
-    InitDbMenu();
+    InitDbTable($myDBtable);
     global $dbh;
     global $tbl;
-    $q = "SELECT * FROM $tbl WHERE `$ColumnName` like '$name'";
+    $q = "SELECT * FROM $tbl WHERE `$columnName` like '$columnValue'";
     $dbData = $dbh->prepare($q);
     $dbData->execute();
     $a = $dbData->fetchAll();
     if (!$a == false) {
         foreach ($a as $row) {
-            if ($row[$ColumnName] == $name) {
+            if ($row[$columnName] == $columnValue) {
                 return true;
             }
         }
@@ -55,36 +56,31 @@ function IsEnableItemMenu($name, $ColumnName)
     return false;
 }
 
-function IsEnableItemId($myId)
+function IsEnTableItemById($myDBtable, $id)
 {
-    InitDbMenu();
+    InitDbTable($myDBtable);
     global $dbh;
     global $tbl;
-
-    echo '<br> ';
-    echo 'my id =  ' . $myId;
-    echo '<br> ';
-
-    $q = "SELECT * FROM $tbl WHERE `id` like '$myId'";
+    $q = "SELECT * FROM $tbl WHERE `id` like '$id'";
     $dbData = $dbh->prepare($q);
     $dbData->execute();
     $a = $dbData->fetchAll();
     return $a;
 }
 
-function DeleteItemMenu($id)
+function DeleteTableItemById($myDBtable, $id)
 {
+    InitDbTable($myDBtable);
     global $dbh;
-    InitDbMenu();
     global $tbl;
     $sql = "DELETE FROM $tbl WHERE id=? LIMIT 1";
     $sth = $dbh->prepare($sql);
     $sth->execute([$id]);
 }
 
-function EditItemMenu($id, $name, $path)
+function EditMenuItem($myDBtable, $id, $name, $path)
 {
-    InitDbMenu();
+    InitDbTable($myDBtable);
     global $dbh;
     global $tbl;
     $sql = "UPDATE $tbl SET name=?, link=? WHERE id=?";
@@ -92,11 +88,11 @@ function EditItemMenu($id, $name, $path)
     $sth->execute([$name, $path, $id]);
 }
 
-function ShowMenu()
+function ShowMenu($myDBtable)
 {
     global $dbh;
-    InitDbMenu();
-    $dbData = $dbh->prepare("SELECT * from `upmenu`");
+    InitDbTable($myDBtable);
+    $dbData = $dbh->prepare("SELECT * from `$myDBtable`");
     $dbData->execute();
 
     echo "<ul class='myMenu'>";
@@ -118,21 +114,20 @@ END;
     echo "</ul>";
 }
 
-function ShowEditForm($row = [], $mode)
+function ShowEditForm($myCol = [], $mode)
 {
     ?>
     <form action="<?= $_SERVER['PHP_SELF'] ?>?section=menu" method="POST">
         <p><?= $mode == 'edit' ? 'Редактирование меню' : 'Добавьте пункт меню' ?>:</p>
-        <input type="hidden" name="id" value="<?= isset($row['id']) ? $row['id'] : '' ?>">
+        <input type="hidden" name="id" value="<?= isset($myCol['id']) ? $myCol['id'] : '' ?>">
         <label>
             Имя:
-            <input type="text" name="itemName" value="<?= isset($row['name']) ? $row['name'] : '' ?>">
+            <input type="text" name="itemName" value="<?= isset($myCol['name']) ? $myCol['name'] : '' ?>">
         </label>
         <label>
             Путь:
-            <input type="text" name="itemLink" value="<?= isset($row['link']) ? $row['link'] : '' ?>">
+            <input type="text" name="itemLink" value="<?= isset($myCol['link']) ? $myCol['link'] : '' ?>">
         </label>
-        <!--        <input type="submit" value="--><? //= $row ? 'Edit' : 'Add' ?><!-- item">-->
         <input type="submit" value="<?= $mode == 'edit' ? 'Edit' : 'Add' ?> item">
     </form>
 
