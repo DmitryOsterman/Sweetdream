@@ -38,7 +38,6 @@ h1 {
 
 .store {
     clear: both;
-    /*min-height: 300px;*/
     margin: 0;
     padding: 0;
 }
@@ -48,7 +47,7 @@ h1 {
     padding: 0;
     list-style: none;
     text-align: center;
-    background-color: blue;
+    background-color: cornflowerblue;
 
     box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
@@ -66,7 +65,7 @@ h1 {
     padding: 10px 40px;
     color: white;
     text-decoration: none;
-    border-left: 2px solid darkblue;
+    border-left: 2px solid lightblue;
 }
 
 .upMenu a:hover {
@@ -81,9 +80,47 @@ h1 {
 }
 
 /*--------------------------------------------------*/
+.mainCatalog {
+    margin: 10px;
+    padding: 0;
+    color: #553e34;
+    display: block;
+    position: relative;
+    width: 60%;
+    list-style: none;
 
-.myMenu>li {
-    text-align: center;
+}
+
+.mainCatalog > li {
+    background: #c7fbf1;
+}
+
+.subCatalog {
+    /*margin-top: 20px;*/
+    background: #c0f4ea;
+    width: 110%;
+    border: thin dotted grey;
+    margin-bottom: 5px;
+    display: block;
+    position: relative;
+    list-style: none;
+
+}
+
+.subCatalog li {
+    border-bottom: thin dotted silver;
+    list-style: none;
+    min-height: 50px;
+}
+
+.c_itemName {
+    width: 85%;
+    height: 30px;
+}
+
+/*--------------------------------------------------*/
+
+.myMenu > li {
     display: inline-block;
     width: auto;
     margin: 0 auto;
@@ -95,9 +132,22 @@ h1 {
     position: relative;
 }
 
-.myMenu>li:hover {
+.myMenu > li:hover {
     background-color: #F5F5F5;
     color: #795a4d;
+}
+
+.newItemMenu {
+    display: inline-block;
+}
+
+.newItemMenu a {
+    color: lightcoral;
+    text-decoration: none;
+}
+
+.newItemMenu a:hover {
+    color: red;
 }
 
 /*--------------------------------------------------*/
@@ -105,26 +155,30 @@ h1 {
 .controls {
     display: none;
 }
-.myMenu>li:hover .controls {
-    display: block;
 
+.myMenu > li:hover .controls {
+    display: block;
 }
 
 /*--------------------------------------------------*/
 .controls {
     position: absolute;
+    width: 150px;
+    text-align: center;
+    background: #FCF8E3;
+
+}
+
+.controls, .goodsControls {
     top: 20px;
     left: 20px;
     z-index: 10;
-    width: 150px;
     margin: 0;
     padding: 0;
     list-style: none;
-    background: #FCF8E3;
 }
 
-.controls li a{
-    display: block;
+.controls li a {
     padding: 5px;
     color: #795a4d;
     text-decoration: none;
@@ -133,9 +187,26 @@ h1 {
 
 }
 
-.controls a:hover {
+.controls a:hover,
+.goodsControls a:hover {
     background: #F5F5F5;
     color: red;
+}
+
+.controls li a {
+    display: block;
+}
+
+.goodsControls li {
+    display: inline-block;
+    width: 50px;
+    border: none red dotted;
+    font-weight: normal;
+}
+
+.goodsControls li a {
+    text-decoration: none;
+
 }
 
 /*================================================*/

@@ -1,14 +1,14 @@
 <?php
 require_once('./db.init');
-function InitDbMenu()
+function InitDbTable($myDBtable)
 {
     global $tbl;
-    $tbl = 'upmenu';
+    $tbl = $myDBtable;
+    $myDBname = DB_NAME;
     global $dbh;
     try {
         if (!$dbh) {
-//            $dbh = new PDO('mysql:host=localhost;dbname=sweetdream', $user, $pass, array(PDO::ATTR_PERSISTENT => true));
-            $dbh = new PDO('mysql:host=localhost;dbname=sweetdream', DB_USER, DB_PASSWORD);
+            $dbh = new PDO("mysql:host=localhost;dbname=$myDBname", DB_USER, DB_PASSWORD);
             $dbh->query("SET NAMES UTF8");
         }
     } catch (PDOException $e) {
@@ -17,18 +17,27 @@ function InitDbMenu()
     }
 }
 
-function AddUpMenuToEnd($str, $adr)
+function AddMenuItem($myDBtable, $name, $path)
 {
+    InitDbTable($myDBtable);
     global $dbh;
-    InitDbMenu();
     global $tbl;
-    $sql = "INSERT INTO $tbl VALUES (null, '$str', '$adr')";
+    $sql = "INSERT INTO $tbl VALUES (null, '$name', '$path')";
     $dbh->query($sql);
 }
 
-function GetMenuItem($id)
+function AddGoodsItem($myDBtable, $parent_id, $name, $price, $amount, $link)
 {
-    InitDbMenu();
+    InitDbTable($myDBtable);
+    global $dbh;
+    global $tbl;
+    $sql = "INSERT INTO $tbl VALUES (null, '$parent_id', '$name', '$price', '$amount', '$link')";
+    $dbh->query($sql);
+}
+
+function GetItem($myDBtable, $id)
+{
+    InitDbTable($myDBtable);
     global $dbh;
     global $tbl;
     $sql = "SELECT * FROM $tbl WHERE id=?";
@@ -37,27 +46,18 @@ function GetMenuItem($id)
     return $sth->fetch();
 }
 
-function EnableItemMenu($str, $myCol)
+function IsEnItemByValue($myDBtable, $columnName, $columnValue)
 {
-    InitDbMenu();
+    InitDbTable($myDBtable);
     global $dbh;
     global $tbl;
-    $q = "SELECT * FROM $tbl WHERE `$myCol` like '$str'";
+    $q = "SELECT * FROM $tbl WHERE `$columnName` like '$columnValue'";
     $dbData = $dbh->prepare($q);
     $dbData->execute();
-
     $a = $dbData->fetchAll();
-    echo "<br>";
-    echo '$str='."$str";
-    echo "<br>";
     if (!$a == false) {
         foreach ($a as $row) {
-            if ($row[$myCol] == $str) {
-                echo "<br>";
-                echo $str;
-                echo "<br>";
-                echo "Пункт меню - <b>$row[$myCol]</b> - уже имеется. Введите другое имя";
-                echo("<br>");
+            if ($row[$columnName] == $columnValue) {
                 return true;
             }
         }
@@ -65,69 +65,177 @@ function EnableItemMenu($str, $myCol)
     return false;
 }
 
-function DeleteItemFromUpMenu($idItem)
+function IsEnItemById($myDBtable, $id)
 {
+    InitDbTable($myDBtable);
     global $dbh;
-    InitDbMenu();
+    global $tbl;
+    $q = "SELECT * FROM $tbl WHERE `id` like '$id'";
+    $dbData = $dbh->prepare($q);
+    $dbData->execute();
+    $a = $dbData->fetchAll();
+    return $a;
+}
+
+function DeleteItemById($myDBtable, $id)
+{
+    InitDbTable($myDBtable);
+    global $dbh;
     global $tbl;
     $sql = "DELETE FROM $tbl WHERE id=? LIMIT 1";
     $sth = $dbh->prepare($sql);
-    $sth->execute([$idItem]);
+    $sth->execute([$id]);
 }
 
-function EditMenuItem($id, $name, $path)
+function EditMenuItem($myDBtable, $id, $name, $path)
 {
-    InitDbMenu();
+    InitDbTable($myDBtable);
     global $dbh;
     global $tbl;
-    $sql = "UPDATE $tbl SET name=?, refer=? WHERE id=?";
+    $sql = "UPDATE $tbl SET name=?, link=? WHERE id=?";
     $sth = $dbh->prepare($sql);
     $sth->execute([$name, $path, $id]);
-    echo "new name: " . $name . " new path:" . $path;
 }
 
-function ShowUpMenu()
+function EditGoodsItem($myDBtable, $parent_id, $name, $price, $amount, $link, $id)
+{
+    InitDbTable($myDBtable);
+    global $dbh;
+    global $tbl;
+    $sql = "UPDATE $tbl SET parent_id=?, name=?, price=?, amount=?, link=? WHERE id=?";
+    $sth = $dbh->prepare($sql);
+    $sth->execute([$parent_id, $name, $price, $amount, $link, $id]);
+}
+
+function ShowGoods($myDBtable)
 {
     global $dbh;
-    InitDbMenu();
-    $dbData = $dbh->prepare("SELECT * from `upmenu`");
+    InitDbTable($myDBtable);
+    $mc = '';
+    $mc .= '<ul class="mainCatalog">';
+    // ---------- 1 Level ---------------
+    $dbData = $dbh->prepare("SELECT * from `$myDBtable` WHERE parent_id='0'");
     $dbData->execute();
 
+    foreach ($dbData->fetchAll() as $row) {
+        $mc .= '<li><h4>' . $row['name'] . ' (id=' . $row['id'] . ')</h4>' . showGoodsControls('goods', $row['id']);
+
+        // ---------- 2 Level ---------------
+        $mc .= '<ul class="subCatalog">';
+        $dbData2 = $dbh->prepare("SELECT * from `$myDBtable` WHERE parent_id='" . $row['id'] . "'");
+        $dbData2->execute();
+        foreach ($dbData2->fetchAll() as $row2) {
+            $mc .= '<li>' . $row2['name'] . ' (id=' . $row2['id']  . ')'. showGoodsControls('goods', $row2['id']);
+
+            // ---------- 3 Level = goods ---------------
+            $mc .= '<ul>';
+            $dbData3 = $dbh->prepare("SELECT * from `$myDBtable` WHERE parent_id='" . $row2['id'] . "'");
+            $dbData3->execute();
+            foreach ($dbData3->fetchAll() as $row3) {
+                $mc .= '<li>' . $row3['name'] . '. Price = ' . $row3['price'] . '. Amount = ' .
+                    $row3['amount'] . showGoodsControls('goods', $row3['id']) . '</li>';
+            }
+            $mc .= '</ul>';
+            $mc .= '</li>';
+        }
+        $mc .= '</ul>';
+    }
+    $mc .= '</li>';
+    $mc .= '</ul>';
+    echo $mc;
+}
+
+function ShowMenu($myDBtable)
+{
+    global $dbh;
+    InitDbTable($myDBtable);
+    $dbData = $dbh->prepare("SELECT * from `$myDBtable`");
+    $dbData->execute();
     echo "<ul class='myMenu'>";
     foreach ($dbData->fetchAll() as $row) {
         echo "<li>$row[1]";
-        echo "<ul class='controls'>";
-        echo "<li><a href='?section=menu&edit=$row[0]'>Edit </a></li>";
-        echo <<<END
-                    <li><a onclick='return confirm("Вы действительно хотите удалить это меню?");'
-                    href='?section=menu&Delete=$row[0]'>Delete </a></li>
-END;
-
-        //        echo "<a href='/up/$row[2]'>Up </a>";
-        //        echo "<a href='/Down/$row[2]'>Down </a>";
-        echo "</ul>";
+        echo showControls('menu', $row[0]);
         echo "</li>";
     }
+    echo("<li class='newItemMenu'><a href='?section=menu&edit=add'>Add</a></li>");
     echo "</ul>";
 }
 
-function ShowMenuForm($row = [])
+function MenuFormEditor($myCol = [], $mode)
 {
     ?>
     <form action="<?= $_SERVER['PHP_SELF'] ?>?section=menu" method="POST">
-        <p>Введите пункт меню:</p>
-        <input type="hidden" name="id" value="<?= isset($row['id']) ? $row['id'] : '' ?>">
+        <p><?= $mode == 'add' ? 'Добавьте пункт меню' : 'Редактирование меню' ?>:</p>
+        <input type="hidden" name="id" value="<?= isset($myCol['id']) ? $myCol['id'] : '' ?>">
         <label>
             Имя:
-            <input type="text" name="newItemName" value="<?= isset($row['name']) ? $row['name'] : '' ?>">
+            <input type="text" name="itemName" value="<?= isset($myCol['name']) ? $myCol['name'] : '' ?>">
         </label>
         <label>
             Путь:
-            <input type="text" name="newItemLink" value="<?= isset($row['link']) ? 'link' : '' ?>">
+            <input type="text" name="itemLink" value="<?= isset($myCol['link']) ? $myCol['link'] : '' ?>">
         </label>
-        <!--        <input type="submit" value="--><? //= $row ? 'Edit' : 'Add' ?><!-- item">-->
-        <input type="submit" value="Add item">
+        <input type="submit" value="<?= $mode == 'add' ? 'Add' : 'Edit' ?> item">
     </form>
 
 <?php
+}
+
+function GoodsFormEditor($myCol = [], $mode)
+{
+    ?>
+    <form action="<?= $_SERVER['PHP_SELF'] ?>?section=goods" method="POST">
+        <p><?= $mode == 'edit' ? 'Редактирование товара' : 'Добавьте товар или раздел' ?>:</p>
+        <input type="hidden" name="id" value="<?= isset($myCol['id']) ? $myCol['id'] : '' ?>">
+        <label>
+            Наименование:
+            <input class="c_itemName" type="text" name="itemName"
+                   value="<?= isset($myCol['name']) ? $myCol['name'] : '' ?>">
+        </label>
+        <label>
+            Родительский id:
+            <input type="text" name="itemParent" value="<?= isset($myCol['parent_id']) ? $myCol['parent_id'] : '' ?>">
+        </label>
+        <label>
+            Цена:
+            <input type="text" name="itemPrice" value="<?= isset($myCol['price']) ? $myCol['price'] : '' ?>">
+        </label>
+        <label>
+            Количество:
+            <input type="text" name="itemAmount" value="<?= isset($myCol['amount']) ? $myCol['amount'] : '' ?>">
+        </label>
+        <label>
+            Путь:
+            <input type="text" name="itemLink" value="<?= isset($myCol['link']) ? $myCol['link'] : '' ?>">
+        </label>
+        <input type="submit" value="<?= $mode == 'edit' ? 'Edit' : 'Add' ?> item">
+    </form>
+
+<?php
+}
+
+function showControls($sec, $id)
+{
+    $mystr = '';
+    $mystr .= "<ul class='controls'>";
+    $mystr .= "<li><a href='?section=$sec&edit=$id'>Edit </a></li>";
+    $mystr .= <<<END
+                    <li><a onclick='return confirm("Вы действительно хотите удалить?");'
+                    href='?section=$sec&delete=$id'>Delete </a></li>
+END;
+    $mystr .= "</ul>";
+    return $mystr;
+}
+
+function showGoodsControls($sec, $id)
+{
+    $mystr = '';
+    $mystr .= "<ul class='goodsControls'>";
+    $mystr .= "<li><a href='?section=$sec&edit=$id'>Edit </a></li>";
+    $mystr .= <<<END
+                    <li><a onclick='return confirm("Вы действительно хотите удалить?");'
+                    href='?section=$sec&delete=$id'>Delete </a></li>
+END;
+    $mystr .= "</ul>";
+    return $mystr;
 }
