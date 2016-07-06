@@ -91,29 +91,35 @@ h1 {
 
 }
 
-.mainCatalog > li {
-    background: #c7fbf1;
+.mainCatalog li h4, .subCatalog li h5 {
+    /*background: #cde1dc;*/
+    background: #ddf3fe;
+
+    padding: 10px;
 }
 
-.subCatalog {
-    /*margin-top: 20px;*/
-    background: #c0f4ea;
-    width: 110%;
-    border: thin dotted grey;
-    margin-bottom: 5px;
-    display: block;
-    position: relative;
-    list-style: none;
+.subCatalog li ul li:nth-child(odd) p {
+    /*background: #a4d2c8;*/
+    background: #defff8;
+    padding: 5px;
+}
 
+.subCatalog li ul li:nth-child(even) p {
+    /*background: #aedad0;*/
+    background: #ddf3fe;
+    padding: 5px;
+}
+
+.mainCatalog li,
+.subCatalog li ul li {
+    position: relative;
 }
 
 .subCatalog li {
-    border-bottom: thin dotted silver;
     list-style: none;
-    min-height: 50px;
 }
 
-.c_itemName {
+.formItemName {
     width: 85%;
     height: 30px;
 }
@@ -166,15 +172,17 @@ h1 {
     width: 150px;
     text-align: center;
     background: #FCF8E3;
-
-}
-
-.controls, .goodsControls {
     top: 20px;
     left: 20px;
     z-index: 10;
     margin: 0;
     padding: 0;
+    list-style: none;
+}
+
+.goodsControls {
+    top: 10px;
+    left: 20px;
     list-style: none;
 }
 
@@ -187,8 +195,7 @@ h1 {
 
 }
 
-.controls a:hover,
-.goodsControls a:hover {
+.controls a:hover {
     background: #F5F5F5;
     color: red;
 }
@@ -199,14 +206,31 @@ h1 {
 
 .goodsControls li {
     display: inline-block;
-    width: 50px;
-    border: none red dotted;
     font-weight: normal;
+    padding: 3px 12px 1px;
+
+    border-right: thin dotted royalblue;
+    border-bottom: thin dotted royalblue;
+    border-left: thin dotted royalblue;
+}
+
+ .goodsControls li {
+    background-color: inherit;
+    /*background-color: #cafff3;*/
+
 }
 
 .goodsControls li a {
     text-decoration: none;
+}
 
+.goodsControls li :hover {
+    color: #795a4d;
+}
+
+h5, h4, .subCatalog ul li p {
+    margin-bottom: 0;
+    margin-top: 5px;
 }
 
 /*================================================*/

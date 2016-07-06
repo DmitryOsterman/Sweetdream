@@ -118,22 +118,22 @@ function ShowGoods($myDBtable)
     $dbData->execute();
 
     foreach ($dbData->fetchAll() as $row) {
-        $mc .= '<li><h4>' . $row['name'] . ' (id=' . $row['id'] . ')</h4>' . showGoodsControls('goods', $row['id']);
+        $mc .= '<li><h4>' . $row['name'] . ' (id=' . $row['id'] . ')</h4>' . showControls('goods', $row['id'], 'goodsControls');
 
         // ---------- 2 Level ---------------
         $mc .= '<ul class="subCatalog">';
         $dbData2 = $dbh->prepare("SELECT * from `$myDBtable` WHERE parent_id='" . $row['id'] . "'");
         $dbData2->execute();
         foreach ($dbData2->fetchAll() as $row2) {
-            $mc .= '<li>' . $row2['name'] . ' (id=' . $row2['id']  . ')'. showGoodsControls('goods', $row2['id']);
+            $mc .= '<li><h5>' . $row2['name'] . ' (id=' . $row2['id'] . ')</h5>' . showControls('goods', $row2['id'], 'goodsControls');
 
             // ---------- 3 Level = goods ---------------
             $mc .= '<ul>';
             $dbData3 = $dbh->prepare("SELECT * from `$myDBtable` WHERE parent_id='" . $row2['id'] . "'");
             $dbData3->execute();
             foreach ($dbData3->fetchAll() as $row3) {
-                $mc .= '<li>' . $row3['name'] . '. Price = ' . $row3['price'] . '. Amount = ' .
-                    $row3['amount'] . showGoodsControls('goods', $row3['id']) . '</li>';
+                $mc .= '<li><p>' . $row3['name'] . '. Price = ' . $row3['price'] . '. Amount = ' .
+                    $row3['amount'] . '</p>' . showControls('goods', $row3['id'], 'goodsControls') . '</li>';
             }
             $mc .= '</ul>';
             $mc .= '</li>';
@@ -154,7 +154,7 @@ function ShowMenu($myDBtable)
     echo "<ul class='myMenu'>";
     foreach ($dbData->fetchAll() as $row) {
         echo "<li>$row[1]";
-        echo showControls('menu', $row[0]);
+        echo showControls('menu', $row[0], 'controls');
         echo "</li>";
     }
     echo("<li class='newItemMenu'><a href='?section=menu&edit=add'>Add</a></li>");
@@ -181,15 +181,23 @@ function MenuFormEditor($myCol = [], $mode)
 <?php
 }
 
-function GoodsFormEditor($myCol = [], $mode)
+function GoodsForm($myTable, $id)
 {
+    if (isset($id)) {
+        if (IsEnItemById($myTable, $id)) {
+            $myCol = GetItem($myTable, $id);
+            $mode = 'edit';
+        }
+    } else {
+        $mode = 'add';
+    }
     ?>
     <form action="<?= $_SERVER['PHP_SELF'] ?>?section=goods" method="POST">
-        <p><?= $mode == 'edit' ? 'Редактирование товара' : 'Добавьте товар или раздел' ?>:</p>
+        <p><?= $mode == 'add' ? 'Добавьте товар или раздел' : "Редактирование товара. (id=$id)" ?>:</p>
         <input type="hidden" name="id" value="<?= isset($myCol['id']) ? $myCol['id'] : '' ?>">
         <label>
             Наименование:
-            <input class="c_itemName" type="text" name="itemName"
+            <input class="formItemName" type="text" name="itemName"
                    value="<?= isset($myCol['name']) ? $myCol['name'] : '' ?>">
         </label>
         <label>
@@ -214,28 +222,16 @@ function GoodsFormEditor($myCol = [], $mode)
 <?php
 }
 
-function showControls($sec, $id)
+function showControls($section, $id, $class)
 {
     $mystr = '';
-    $mystr .= "<ul class='controls'>";
-    $mystr .= "<li><a href='?section=$sec&edit=$id'>Edit </a></li>";
+    $mystr .= "<ul class='$class'>";
+    $mystr .= "<li><a href='?section=$section&edit=$id'>Edit </a></li>";
     $mystr .= <<<END
                     <li><a onclick='return confirm("Вы действительно хотите удалить?");'
-                    href='?section=$sec&delete=$id'>Delete </a></li>
+                    href='?section=$section&delete=$id'>Delete </a></li>
 END;
     $mystr .= "</ul>";
     return $mystr;
 }
 
-function showGoodsControls($sec, $id)
-{
-    $mystr = '';
-    $mystr .= "<ul class='goodsControls'>";
-    $mystr .= "<li><a href='?section=$sec&edit=$id'>Edit </a></li>";
-    $mystr .= <<<END
-                    <li><a onclick='return confirm("Вы действительно хотите удалить?");'
-                    href='?section=$sec&delete=$id'>Delete </a></li>
-END;
-    $mystr .= "</ul>";
-    return $mystr;
-}
