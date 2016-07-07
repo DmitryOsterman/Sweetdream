@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `goods` (
 	`name` CHAR(250) NOT NULL,
 	`price` CHAR(30) NOT NULL,
 	`amount` CHAR(30) NOT NULL,	
-	`refer` CHAR(30) NOT NULL,
+	`link` CHAR(30) NOT NULL,
 	PRIMARY KEY (id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
