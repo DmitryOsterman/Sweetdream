@@ -26,12 +26,12 @@ function AddMenuItem($myDBtable, $name, $path)
     $dbh->query($sql);
 }
 
-function AddGoodsItem($myDBtable, $parent_id, $name, $price, $amount, $link)
+function AddGoodsItem($myDBtable, $parent_id, $name, $price, $amount, $link, $imgLink)
 {
     InitDbTable($myDBtable);
     global $dbh;
     global $tbl;
-    $sql = "INSERT INTO $tbl VALUES (null, '$parent_id', '$name', '$price', '$amount', '$link')";
+    $sql = "INSERT INTO $tbl VALUES (null, '$parent_id', '$name', '$price', '$amount', '$link', '$imgLink')";
     $dbh->query($sql);
 }
 
@@ -97,45 +97,50 @@ function EditMenuItem($myDBtable, $id, $name, $path)
     $sth->execute([$name, $path, $id]);
 }
 
-function EditGoodsItem($myDBtable, $parent_id, $name, $price, $amount, $link, $id)
+function EditGoodsItem($myDBtable, $parent_id, $name, $price, $amount, $link, $imgLink, $id)
 {
     InitDbTable($myDBtable);
     global $dbh;
     global $tbl;
-    $sql = "UPDATE $tbl SET parent_id=?, name=?, price=?, amount=?, link=? WHERE id=?";
+    $sql = "UPDATE $tbl SET parent_id=?, name=?, price=?, amount=?, link=?, imgLink=? WHERE id=?";
     $sth = $dbh->prepare($sql);
-    $sth->execute([$parent_id, $name, $price, $amount, $link, $id]);
+    $sth->execute([$parent_id, $name, $price, $amount, $link, $imgLink, $id]);
 }
 
 function ShowGoods($myDBtable)
 {
     global $dbh;
     InitDbTable($myDBtable);
-    $mc = '';
+    $mc = '<h2>Каталог</h2>';
     $mc .= '<ul class="mainCatalog">';
     // ---------- 1 Level ---------------
     $dbData = $dbh->prepare("SELECT * from `$myDBtable` WHERE parent_id='0'");
     $dbData->execute();
 
     foreach ($dbData->fetchAll() as $row) {
-        $mc .= '<li><h4>' . $row['name'] . ' (id=' . $row['id'] . ')</h4>' . showControls('goods', $row['id'], 'goodsControls');
+        $mc .= '<li><h4>' . $row['name'] . ' (id=' . $row['id'] . ')</h4>' . ShowControls('goods', $row['id'], 'goodsControls');
 
         // ---------- 2 Level ---------------
         $mc .= '<ul class="subCatalog">';
         $dbData2 = $dbh->prepare("SELECT * from `$myDBtable` WHERE parent_id='" . $row['id'] . "'");
         $dbData2->execute();
         foreach ($dbData2->fetchAll() as $row2) {
-            $mc .= '<li><h5>' . $row2['name'] . ' (id=' . $row2['id'] . ')</h5>' . showControls('goods', $row2['id'], 'goodsControls');
+            $mc .= '<li><h5>' . $row2['name'] . ' (id=' . $row2['id'] . ')</h5>' . ShowControls('goods', $row2['id'], 'goodsControls');
 
             // ---------- 3 Level = goods ---------------
-            $mc .= '<ul>';
+            $mc .= '<div class="topSale"><ul>';
             $dbData3 = $dbh->prepare("SELECT * from `$myDBtable` WHERE parent_id='" . $row2['id'] . "'");
             $dbData3->execute();
             foreach ($dbData3->fetchAll() as $row3) {
-                $mc .= '<li><p>' . $row3['name'] . '. Price = ' . $row3['price'] . '. Amount = ' .
-                    $row3['amount'] . '</p>' . showControls('goods', $row3['id'], 'goodsControls') . '</li>';
+//                <a href=' . $row3['link'] . '>
+                $mc .= '<li>';
+                $mc .= '<img src=' . $row3['imgLink'] . '></a>'
+                    . '<p>' . 'id=' . $row3['id'] . '. ' . $row3['name'] . '. Price = ' . $row3['price'] . '. Amount = '
+                    . $row3['amount'] . '</p>' . ShowControls('goods', $row3['id'], 'goodsControls') . '</li>';
             }
-            $mc .= '</ul>';
+
+
+            $mc .= '</ul></div>';
             $mc .= '</li>';
         }
         $mc .= '</ul>';
@@ -154,7 +159,7 @@ function ShowMenu($myDBtable)
     echo "<ul class='myMenu'>";
     foreach ($dbData->fetchAll() as $row) {
         echo "<li>$row[1]";
-        echo showControls('menu', $row[0], 'controls');
+        echo ShowControls('menu', $row[0], 'controls');
         echo "</li>";
     }
     echo("<li class='newItemMenu'><a href='?section=menu&edit=add'>Add</a></li>");
@@ -175,6 +180,10 @@ function MenuFormEditor($myCol = [], $mode)
             Путь:
             <input type="text" name="itemLink" value="<?= isset($myCol['link']) ? $myCol['link'] : '' ?>">
         </label>
+        <label>
+            Изображение:
+            <input type="text" name="imglink" value="<?= isset($myCol['imgLink']) ? $myCol['imgLink'] : '' ?>">
+        </label>
         <input type="submit" value="<?= $mode == 'add' ? 'Add' : 'Edit' ?> item">
     </form>
 
@@ -192,8 +201,8 @@ function GoodsForm($myTable, $id)
         $mode = 'add';
     }
     ?>
-    <form action="<?= $_SERVER['PHP_SELF'] ?>?section=goods" method="POST">
-        <p><?= $mode == 'add' ? 'Добавьте товар или раздел' : "Редактирование товара. (id=$id)" ?>:</p>
+    <form class="itemProperty" action="<?= $_SERVER['PHP_SELF'] ?>?section=goods" method="POST">
+        <h3><?= $mode == 'add' ? 'Добавьте товар или раздел' : "Редактирование товара (id=$id)" ?>:</h3>
         <input type="hidden" name="id" value="<?= isset($myCol['id']) ? $myCol['id'] : '' ?>">
         <label>
             Наименование:
@@ -202,7 +211,7 @@ function GoodsForm($myTable, $id)
         </label>
         <label>
             Родительский id:
-            <input type="text" name="itemParent" value="<?= isset($myCol['parent_id']) ? $myCol['parent_id'] : '' ?>">
+            <input type="number" name="itemParent" value="<?= isset($myCol['parent_id']) ? $myCol['parent_id'] : '' ?>">
         </label>
         <label>
             Цена:
@@ -210,11 +219,22 @@ function GoodsForm($myTable, $id)
         </label>
         <label>
             Количество:
-            <input type="text" name="itemAmount" value="<?= isset($myCol['amount']) ? $myCol['amount'] : '' ?>">
+            <input type="number" name="itemAmount" value="<?= isset($myCol['amount']) ? $myCol['amount'] : '' ?>">
         </label>
+
+        <p></p>
         <label>
             Путь:
-            <input type="text" name="itemLink" value="<?= isset($myCol['link']) ? $myCol['link'] : '' ?>">
+            <input type="search" name="itemLink" size="110"
+                   value="<?= isset($myCol['link']) ? $myCol['link'] : '' ?>">
+        </label>
+
+        <p></p>
+        <label>
+            Фото:
+            <input type="text" name="itemImage" size="70"
+                   value="<?= isset($myCol['imgLink']) ? $myCol['imgLink'] : '' ?>">
+            <input type="file" name="itemImage">
         </label>
         <input type="submit" value="<?= $mode == 'edit' ? 'Edit' : 'Add' ?> item">
     </form>
@@ -222,7 +242,7 @@ function GoodsForm($myTable, $id)
 <?php
 }
 
-function showControls($section, $id, $class)
+function ShowControls($section, $id, $class)
 {
     $mystr = '';
     $mystr .= "<ul class='$class'>";
@@ -235,3 +255,47 @@ END;
     return $mystr;
 }
 
+function FileUploading()
+{
+    if (isset($_FILES['image'])) {
+        $errors = array();
+        $file_name = $_FILES['image']['name'];
+        $file_size = $_FILES['image']['size'];
+        $file_tmp = $_FILES['image']['tmp_name'];
+        $file_type = $_FILES['image']['type'];
+        $file_ext = strtolower(end(explode('.', $_FILES['image']['name'])));
+
+        $expensions = array("jpeg", "jpg", "png");
+
+        if (in_array($file_ext, $expensions) === false) {
+            $errors[] = "extension not allowed, please choose a JPEG or PNG file.";
+        }
+
+        if ($file_size > 2097152) {
+            $errors[] = 'File size must be excately 2 MB';
+        }
+        $name = md5(time());
+        if (empty($errors) == true) {
+//            move_uploaded_file($file_tmp, "../img/" . $file_name);
+            move_uploaded_file($file_tmp, "../img/" . $name . "." . $file_ext);
+            echo $name . '<br>';
+            echo $file_ext . '<br>';
+            echo "Success";
+        } else {
+            print_r($errors);
+        }
+    }
+}
+
+function UploadForm()
+{
+    ?>
+    <form action="" method="POST" enctype="multipart/form-data">
+        <label>
+            Загрузите фото:
+            <input type="file" name="image"/>
+        </label>
+        <input type="submit" value="Upload"/>
+    </form>
+<?
+}

@@ -48,7 +48,6 @@ h1 {
     list-style: none;
     text-align: center;
     background-color: cornflowerblue;
-
     box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
@@ -86,28 +85,17 @@ h1 {
     color: #553e34;
     display: block;
     position: relative;
-    width: 60%;
+    width: 90%;
     list-style: none;
-
 }
 
 .mainCatalog li h4, .subCatalog li h5 {
-    /*background: #cde1dc;*/
     background: #ddf3fe;
-
     padding: 10px;
 }
 
-.subCatalog li ul li:nth-child(odd) p {
-    /*background: #a4d2c8;*/
-    background: #defff8;
-    padding: 5px;
-}
-
-.subCatalog li ul li:nth-child(even) p {
-    /*background: #aedad0;*/
-    background: #ddf3fe;
-    padding: 5px;
+.subCatalog p {
+    padding: 0 5px;
 }
 
 .mainCatalog li,
@@ -119,9 +107,17 @@ h1 {
     list-style: none;
 }
 
-.formItemName {
+.itemProperty .formItemName {
     width: 85%;
     height: 30px;
+}
+
+input[type="submit"] {
+    display: block;
+    margin: 0 auto;
+    /*width: 200px;*/
+    /*height: 30px;*/
+    /*text-align: center;*/
 }
 
 /*--------------------------------------------------*/
@@ -184,6 +180,7 @@ h1 {
     top: 10px;
     left: 20px;
     list-style: none;
+    text-align: right;
 }
 
 .controls li a {
@@ -214,10 +211,8 @@ h1 {
     border-left: thin dotted royalblue;
 }
 
- .goodsControls li {
+.goodsControls li {
     background-color: inherit;
-    /*background-color: #cafff3;*/
-
 }
 
 .goodsControls li a {
@@ -231,6 +226,44 @@ h1 {
 h5, h4, .subCatalog ul li p {
     margin-bottom: 0;
     margin-top: 5px;
+}
+
+/*=================================================================*/
+
+.topSale {
+    display: block;
+    margin: 10px auto;
+    overflow: hidden;
+    position: relative;
+
+}
+
+.topSale > ul > li {
+    position: relative;
+    display: inline-block;
+    -webkit-box-shadow: 0 1px 9px 0 rgba(0, 0, 0, 0.25);
+    -moz-box-shadow: 0 1px 9px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 9px 0 rgba(0, 0, 0, 0.25);
+    width: 390px;
+    margin: 10px;
+    padding: 5px;
+    height: 150px;
+}
+
+.topSale p {
+    height: 120px;
+    overflow: auto;
+
+}
+
+.topSale img {
+    width: 130px;
+    height: 130px;
+    float: left;
+}
+
+.topSale .goodsControls {
+    clear: both;
 }
 
 /*================================================*/

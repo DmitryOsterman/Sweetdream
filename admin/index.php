@@ -29,20 +29,23 @@ include_once('global.php');
 			<a href="?section=main">Главная</a></li><li>
 			<a href="?section=menu">Меню</a></li><li>
 			<a href="?section=goods">Товары</a></li><li>
-			<a href="#">Картинки</a></li>
+			<a href="?section=images">Картинки</a></li>
         </ul>
 
         <?php
         if (isset($_GET['section'])) {
             switch ($_GET['section']) {
+                case 'main':
+                    require "main.php";
+                    break;
                 case 'menu':
                     require "menu.php";
                     break;
                 case 'goods':
                     require "goods.php";
                     break;
-                case 'main':
-                    require "main.php";
+                 case 'images':
+                    require "images.php";
                     break;
             }
         } else {
