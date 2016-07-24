@@ -1,9 +1,13 @@
-﻿<?php require_once('global.php'); ?>
+<?php
+ob_start();
+include_once('global.php');
+InitCart();
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Сладкий сон</title>
-    <meta http-equiv="Content-Type" 
+    <meta http-equiv="Content-Type"
 	content="text/html; charset=utf8">
     <meta name="description" lang="en" content="Store, Shop, Good Bedding, Bed linen">
     <link rel="stylesheet" type="text/css" media="all" href="css/style.css">
@@ -17,6 +21,7 @@
 
 <body>
 
+
 <!------------------------------------------------------>
 <div class="siteContainer">
 
@@ -28,7 +33,7 @@
             <ul class="userMenu">
                 <li><a href="admin">Вход</a></li>
                 <li><a href="#Help">Помощь</a></li>
-                <li><a href="#Cart">Корзина</a></li>
+                <li><a href="#"><?CartButton()?></a></li>
 
             </ul>
             <div class="searchGoods">
@@ -43,17 +48,16 @@
         </div>
 
         <div class="titleSite">
-            <h1><b>Сладкий </b>сон </h1>
+            <a href="http://sweetdream/"><h1><b>Сладкий </b>сон </h1></a>
             Постельное белье и качественный трикотаж
         </div>
-
 
     </div>
 </div>
 
 <div class="store">
 	<?php print_menu(); ?>
-	
+
     <div class="leftBlock">
         <div class="hidden catalogContainer">
             <h2>Каталог</h2>
@@ -201,7 +205,7 @@
                     <div class="description">Комплект постельного белья 2-х спальный, шелк</div>
                     <div class="price">5499 руб.</div>
                     <!--<div class="raiting">Рейтинг: 5/5</div>-->
-                    <div class="addToCart"><a href="#">В корзину</a></div>
+                    <div class="addToCart"><a href="?order=9">В корзину</a></div>
                 </div>
             </div>
         </div>
@@ -267,7 +271,7 @@
 <div class="copyRight">
     <div class="sawLine"></div>
     <small>
-        Made by |} {} & /| {}. 2016
+        Made by |} {}. 2016
     </small>
 
 </div>

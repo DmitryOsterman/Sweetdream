@@ -17,6 +17,11 @@ function InitDbTable($myDBtable)
     }
 }
 
+function ImgPath()
+{
+    return "../img/";
+}
+
 function AddMenuItem($myDBtable, $name, $path)
 {
     InitDbTable($myDBtable);
@@ -180,10 +185,7 @@ function MenuFormEditor($myCol = [], $mode)
             Путь:
             <input type="text" name="itemLink" value="<?= isset($myCol['link']) ? $myCol['link'] : '' ?>">
         </label>
-        <label>
-            Изображение:
-            <input type="text" name="imglink" value="<?= isset($myCol['imgLink']) ? $myCol['imgLink'] : '' ?>">
-        </label>
+
         <input type="submit" value="<?= $mode == 'add' ? 'Add' : 'Edit' ?> item">
     </form>
 
@@ -232,7 +234,7 @@ function GoodsForm($myTable, $id)
         <p></p>
         <label>
             Фото:
-            <input type="text" name="itemImage" size="70"
+            <input type="text" disabled="disabled" name="oldImage" size="70"
                    value="<?= isset($myCol['imgLink']) ? $myCol['imgLink'] : '' ?>">
             <input type="file" name="itemImage">
         </label>
@@ -299,3 +301,4 @@ function UploadForm()
     </form>
 <?
 }
+
