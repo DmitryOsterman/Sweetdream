@@ -1,4 +1,48 @@
 ﻿<?php
+require_once ('./models/menu.php');
+
+$action = getAction();
+switch ($action) {
+    case 'show':
+        render('menu', 'list');
+        break;
+    case 'new':
+        render('menu', 'new');
+        break;
+    case 'edit':
+        render('menu', 'edit');
+        break;
+    case 'add':
+        $errors = ValidateMenuItemForm($_POST);
+        if ($errors) {
+            render('menu', 'new', ['errors' => $errors]);
+        } else {
+            if (FindMenuItem(['name' => $_POST['name']])) {
+                render('menu', 'new', ['errors' => ['Такой пункт меню уже есть']]);
+            } else {
+                AddMenuItem($_POST['name']);
+                header('Location: ?section=menu');
+            }
+        }
+        break;
+    case 'update':
+        $errors = ValidateMenuItemForm($_POST);
+        if ($errors) {
+            render('menu', 'edit', ['errors' => $errors]);
+        } else {
+            EditMenuItem(getId(), $_POST['name']);
+            render('menu', 'edit', ['message' => 'Изменения сохранены']);
+        }
+        break;
+    case 'delete':
+        DeleteMenuItem(getId());
+        header('Location: ?section=menu');
+        break;
+    default:
+        print 'Это действие я еще обрабатывать не умею :(';
+        break;
+}
+/*
 $myTable = 'upmenu';
 ShowMenu($myTable);
 
@@ -32,3 +76,4 @@ if (isset($_GET['delete'])) {
     ob_end_flush();
     exit;
 }
+*/
