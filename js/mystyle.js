@@ -25,7 +25,7 @@ $(document).ready(function () {
 
     //========================================================================
     $("#siteLogin").click(function () {
-        $(".formLogin").toggle("fast");
+        $(".formLogin").toggle();
     });
 
 

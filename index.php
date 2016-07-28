@@ -39,9 +39,7 @@ InitCart();
                 <li><a href="admin">Админ</a></li>
                 <!--                <li><a class="siteLogin" href="#" -->
                 <? // "onclick='formLoginToggle'"?><!-- >Вход</a></li>-->
-                <li>
-                    <a id="siteLogin" href="#"><? LoginButton() ?></a>
-                </li>
+                <li><? LoginButton() ?></li>
                 <li><a href="#">Помощь</a></li>
                 <li><a href="#"><? CartButton() ?></a></li>
             </ul>

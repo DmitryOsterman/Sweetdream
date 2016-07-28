@@ -41,29 +41,57 @@ function InitCart()
 
 function LoginButton()
 {
-//    session_start();
-
-//=================================!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
+// temp login & passw
+//
     $enter_login = "2";
     $enter_passw = "111";
-//=================================!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    $enter_passw = md5($enter_passw);
 
-    if (isset($_SESSION['sess_login']) && isset($_SESSION['sess_pass'])) {
-        if ($_SESSION['sess_login'] === $enter_login &&
-            $_SESSION['sess_pass'] === $enter_passw
+    $err = '';
+    if (isset($_POST['login']) && isset($_POST['passw'])) {
+        $_POST['passw'] = md5($_POST['passw']);
+        if ($_POST['login'] === $enter_login &&
+            $_POST['passw'] === $enter_passw
         ) {
-            echo " Информация   для   прошедших   аутентификацию <br><br>\n";
-//            echo "<a href=\"exit.php\"> Выйти   из   системы </a>\n";
+            session_start();
+            $_SESSION['sess_login'] = $_POST['login'];
+            $_SESSION['sess_pass'] = $_POST['passw'];
+
+            $mc = '';
+            $mc .= "<a id='siteLogin' href='#'>";
+            $mc .= 'Привет, ';
+            $mc .= $_SESSION['sess_login'];
+            $mc .= '</a>';
+            $mc .= "<a href='?exit=true'><small>Выйти</small></a>";
+
+            echo $mc;
+
         } else {
+//            Неверные логин и/или пароль
+            $mc = <<<END
+            <script>
+                alert('Неверные логин и/или пароль');
+            </script>
+END;
+            echo $mc;
+
+            $mc = "<a id='siteLogin' href='#'>";
+            $mc .= 'Войти';
+            $mc .= '</a>';
+            echo $mc;
+
 //            header('Location:' . $_SERVER['PHP_SELF']);
 //            exit();
         }
-    } else
-    {
-        echo "Вход";
+    } else {
+
+        $mc = "<a id='siteLogin' href='#'>";
+        $mc .= 'Войти';
+        $mc .= '</a>';
+        echo $mc;
     }
 }
-//<div id="siteLogin"> Вход</div>
 
 function CartButton()
 {
@@ -76,7 +104,7 @@ function CartButton()
     if (count($_SESSION['product']) <= 0) {
         echo "Корзина";
     } else {
-        echo "<a href='?exit=true'>Очистить</a>";
+        echo "<a href='?exit=true'><small>Очистить</small></a>";
     }
 }
 
@@ -85,9 +113,15 @@ function LoginForm()
     $mc = '';
     $mc .= '<div class = "formLogin"  align = "right">';
     $mc .= '<form action = "" method = "POST" >';
-    $mc .= '<input type = "text" name = "sess_login" placeholder = "Login" />';
-    $mc .= '<input type = "text" name = "sess_pass" placeholder = "Password" />';
+    $mc .= '<input type = "text" name = "login" placeholder = "Login" />';
+    $mc .= '<input type = "password" name = "passw" placeholder = "Password" />';
     $mc .= '<input type = "submit" value = "Вход" />';
-    $mc .= '</form ></div >';
+    $mc .= '</form >';
+    echo $mc;
+    $mc = '';
+    $mc .= '<div class = "madUser"  align = "right">';
+    $mc .= '<small><a href="reg.php">Зарегистрироваться /</a>';
+    $mc .= '<a href="fogetpassw.php"> Забыли пароль?</a></small>';
+    $mc .= '</div ></div >';
     echo $mc;
 }

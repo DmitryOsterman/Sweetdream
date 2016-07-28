@@ -2,8 +2,8 @@
 .userMenuContainer, .upMenu, .catalogContainer, .siteContainer,
 .searchGoods, .goodsContainer, .topSale, .topSaleContainer, .reviewContainer,
 .footerContainer {
-/*     border: 1px dashed darkred;*/
- }
+    /*     border: 1px dashed darkred;*/
+}
 
 .hidden {
     /*display: none;*/
@@ -37,12 +37,12 @@ h2, h1 {
     background-color: #e6faf5;
 }
 
-
 .headerContainer .sawLine {
     height: 8px;
     background: url("../img/tri8top.png") repeat-x;
     background-color: #e6faf5;
 }
+
 .copyRight .sawLine {
     height: 8px;
     background: url("../img/tri8bottom.png") repeat-x;
@@ -51,8 +51,8 @@ h2, h1 {
 }
 
 .headerContainer {
-    min-height: 108px;
-	background-color: #e6faf5;
+    min-height: 148px;
+    background-color: #e6faf5;
     /*padding-top: 10px;
     padding-right: 0;
     padding-left: 0;
@@ -81,7 +81,7 @@ h2, h1 {
     float: right;
     width: 550px;
     padding: 0 10px;
-    
+
 }
 
 .userMenu {
@@ -129,9 +129,9 @@ input.find {
 
 .store {
     clear: both;
-	height: 0px;
+    height: 0px;
     margin: 0;
-    padding: 0;	
+    padding: 0;
 }
 
 .upMenuContainer {
@@ -152,7 +152,7 @@ input.find {
 
 .upMenu li {
     display: inline-block;
-	width: auto;	 
+    width: auto;
 }
 
 .upMenu a {
@@ -312,7 +312,7 @@ input.find {
 }
 
 .topSale li {
-	position: relative;
+    position: relative;
     display: inline-block;
     -webkit-box-shadow: 0 1px 9px 0 rgba(0, 0, 0, 0.25);
     -moz-box-shadow: 0 1px 9px 0 rgba(0, 0, 0, 0.25);
@@ -348,7 +348,12 @@ input.find {
 
 }
 
+/*================================================*/
+/*================================================*/
 
+.formLogin {
+    display: none;
+}
 
 
 
