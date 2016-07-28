@@ -8,7 +8,7 @@ InitCart();
 <head>
     <title>Сладкий сон</title>
     <meta http-equiv="Content-Type"
-	content="text/html; charset=utf8">
+          content="text/html; charset=utf8">
     <meta name="description" lang="en" content="Store, Shop, Good Bedding, Bed linen">
     <link rel="stylesheet" type="text/css" media="all" href="css/style.css">
 
@@ -29,13 +29,26 @@ InitCart();
     <div class="sawLine"></div>
     <div class="hidden header">
 
+        <div class="titleSite">
+            <a href="http://sweetdream/"><h1><b>Сладкий </b>сон </h1></a>
+            Постельное белье и качественный трикотаж
+        </div>
+
         <div class="userMenuContainer">
             <ul class="userMenu">
-                <li><a href="admin">Вход</a></li>
-                <li><a href="#Help">Помощь</a></li>
-                <li><a href="#"><?CartButton()?></a></li>
-
+                <li><a href="admin">Админ</a></li>
+                <!--                <li><a class="siteLogin" href="#" -->
+                <? // "onclick='formLoginToggle'"?><!-- >Вход</a></li>-->
+                <li>
+                    <a id="siteLogin" href="#"><? LoginButton() ?></a>
+                </li>
+                <li><a href="#">Помощь</a></li>
+                <li><a href="#"><? CartButton() ?></a></li>
             </ul>
+            <!--            formLogin-->
+            <? LoginForm() ?>
+
+            <!--            formCart-->
             <div class="searchGoods">
                 <form action="search">
                     <input type="search" name="Search" id="idSearch" value=""
@@ -47,16 +60,12 @@ InitCart();
             </div>
         </div>
 
-        <div class="titleSite">
-            <a href="http://sweetdream/"><h1><b>Сладкий </b>сон </h1></a>
-            Постельное белье и качественный трикотаж
-        </div>
 
     </div>
 </div>
 
 <div class="store">
-	<?php print_menu(); ?>
+    <?php print_menu(); ?>
 
     <div class="leftBlock">
         <div class="hidden catalogContainer">

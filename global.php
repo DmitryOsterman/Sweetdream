@@ -37,14 +37,37 @@ function InitCart()
         header('Location: ' . $_SERVER['PHP_SELF']);
         ob_end_flush();
     }
-
 }
+
+function LoginButton()
+{
+//    session_start();
+
+//=================================!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    $enter_login = "2";
+    $enter_passw = "111";
+//=================================!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    if (isset($_SESSION['sess_login']) && isset($_SESSION['sess_pass'])) {
+        if ($_SESSION['sess_login'] === $enter_login &&
+            $_SESSION['sess_pass'] === $enter_passw
+        ) {
+            echo " Информация   для   прошедших   аутентификацию <br><br>\n";
+//            echo "<a href=\"exit.php\"> Выйти   из   системы </a>\n";
+        } else {
+//            header('Location:' . $_SERVER['PHP_SELF']);
+//            exit();
+        }
+    } else
+    {
+        echo "Вход";
+    }
+}
+//<div id="siteLogin"> Вход</div>
 
 function CartButton()
 {
     if (isset($_SESSION['product'])) {
-//        echo "Корзина ";
-        $summ = 0;
         foreach ($_SESSION['product'] as $key => $value) {
             //Берем из БД товары, по их ID
         }
@@ -55,4 +78,16 @@ function CartButton()
     } else {
         echo "<a href='?exit=true'>Очистить</a>";
     }
+}
+
+function LoginForm()
+{
+    $mc = '';
+    $mc .= '<div class = "formLogin"  align = "right">';
+    $mc .= '<form action = "" method = "POST" >';
+    $mc .= '<input type = "text" name = "sess_login" placeholder = "Login" />';
+    $mc .= '<input type = "text" name = "sess_pass" placeholder = "Password" />';
+    $mc .= '<input type = "submit" value = "Вход" />';
+    $mc .= '</form ></div >';
+    echo $mc;
 }
