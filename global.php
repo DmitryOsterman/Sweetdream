@@ -1,4 +1,23 @@
 <?php
+
+function Db()
+{
+    require_once('./admin/config/db.init');
+
+    global $dbh;
+    try {
+        if (!$dbh) {
+            $dbh = new PDO("mysql:host=localhost;dbname=" . DB_NAME . ';charset=UTF8;', DB_USER, DB_PASSWORD);
+        }
+    } catch (PDOException $e) {
+        die("Error!: " . $e->getMessage() . "<br/>");
+    }
+
+    return $dbh;
+}
+
+
+// print_menu - переделать исп. Db()
 function print_menu()
 {
     $link = mysqli_connect("localhost", "admin_sd", "df9(s1", "sweetdream");
@@ -8,7 +27,7 @@ function print_menu()
         exit();
     };
     if ($res = mysqli_query($link, 'SELECT * FROM `upmenu` WHERE 1', MYSQLI_USE_RESULT)) {
-        echo "<ul class='hidden upMenu'>";
+        echo "<ul class='upMenu'>";
         while ($content = mysqli_fetch_array($res, MYSQLI_NUM)) {
             echo "<li><a href=$content[2]> $content[1] </a></li>";
         };
@@ -19,14 +38,25 @@ function print_menu()
     mysqli_close($link);
 }
 
-function InitCart()
+
+// ----------- sessions ----------------
+function startSession()
 {
-    session_start();
-    if (isset($_GET['exit'])) {
+    if (session_id()) return true;
+    else return session_start();
+}
+
+function destroySession()
+{
+    if (session_id()) {
+        session_unset();
+        setcookie(session_name(), session_id(), time() - 60 * 60 * 24);
         session_destroy();
-        header('Location:' . $_SERVER['PHP_SELF']);
-        ob_end_flush();
     }
+}
+
+function initCart()
+{
     if (isset($_GET['order'])) {
         $new_product = trim(strip_tags($_GET['new_product']));
         if (isset($_SESSION['product'])) {
@@ -39,89 +69,120 @@ function InitCart()
     }
 }
 
-function LoginButton()
+function checkUser()
 {
-//
-// temp login & passw
-//
-    $enter_login = "2";
-    $enter_passw = "111";
-    $enter_passw = md5($enter_passw);
+    $errors = [];
+//    $user = FindUserItem(['email' => $_POST['login']]);
+//        echo '<pre>';
+//        print_r($user);
+//        echo '</pre>';
 
-    $err = '';
     if (isset($_POST['login']) && isset($_POST['passw'])) {
-        $_POST['passw'] = md5($_POST['passw']);
-        if ($_POST['login'] === $enter_login &&
-            $_POST['passw'] === $enter_passw
+
+        $user = FindUserItem(['email' => $_POST['login']]);
+
+        if ($_POST['login'] === $user[0]['email'] &&
+            md5($_POST['passw']) === $user[0]['password']
         ) {
-            session_start();
             $_SESSION['sess_login'] = $_POST['login'];
             $_SESSION['sess_pass'] = $_POST['passw'];
-
-            $mc = '';
-            $mc .= "<a id='siteLogin' href='#'>";
-            $mc .= 'Привет, ';
-            $mc .= $_SESSION['sess_login'];
-            $mc .= '</a>';
-            $mc .= "<a href='?exit=true'><small>Выйти</small></a>";
-
-            echo $mc;
-
+            $_SESSION['sess_id'] = $user[0]['id'];
+            //          " Entering!";
+            return true;
         } else {
-//            Неверные логин и/или пароль
-            $mc = <<<END
-            <script>
-                alert('Неверные логин и/или пароль');
-            </script>
-END;
-            echo $mc;
-
-            $mc = "<a id='siteLogin' href='#'>";
-            $mc .= 'Войти';
-            $mc .= '</a>';
-            echo $mc;
-
-//            header('Location:' . $_SERVER['PHP_SELF']);
-//            exit();
+            //          " Not Enter";
+            $errors[] = 'Неверные логин и/или пароль';
         }
     } else {
-
-        $mc = "<a id='siteLogin' href='#'>";
-        $mc .= 'Войти';
-        $mc .= '</a>';
-        echo $mc;
+        if (isset($_SESSION['sess_login']) && isset($_SESSION['sess_pass'])) {
+            if (isset($_GET['id'])) // проверка подмены id
+            {
+                if (($_GET['id']) == $_SESSION['sess_id']) {
+                    return true;
+                } else {
+                    $errors[] = 'Вы не можете редактировать этого пользователя';
+                }
+            } else {
+                return true;
+            }
+        } else {
+            $errors[] = "Введите логин и/или пароль";
+        }
     }
+    return $errors;
 }
 
-function CartButton()
+
+// ----------- menu buttons ----------------
+function loginButton()
+{
+    if (isset($_SESSION['sess_login'])) {
+        ?>
+        <a href="?action=edit<?= '&id=' . $_SESSION['sess_id'] ?>" id='siteLogin'>
+            <?= $_SESSION['sess_login'] ?>
+        </a>
+        <a href='?action=exit'>
+            <small>x</small>
+        </a>
+    <?
+    } else {
+        ?> <a href="?action=login" id='siteLogin'>Войти</a> <?
+    }
+//    location.href='?section=users&action=edit&id=<?= $item['id']
+}
+
+function cartButton()
 {
     if (isset($_SESSION['product'])) {
-        foreach ($_SESSION['product'] as $key => $value) {
-            //Берем из БД товары, по их ID
+
+//        foreach ($_SESSION['product'] as $key => $value) {
+//            //Берем из БД товары, по их ID
+//        }
+
+
+        if (count($_SESSION['product']) <= 0) {
+            echo "<a href='#'>Корзина</a>";
+        } else {
+            echo "<a href='#'>Корзина (<b>" . count($_SESSION['product']) . "</b>)</a>";
         }
-        echo "Корзина (<b>" . count($_SESSION['product']) . '</b>)';
-    }
-    if (count($_SESSION['product']) <= 0) {
-        echo "Корзина";
     } else {
-        echo "<a href='?exit=true'><small>Очистить</small></a>";
+        echo "<a href='#'>Корзина</a>";
+    }
+
+}
+
+
+function getAction()
+{
+    return isset($_GET['action']) ? $_GET['action'] : 'show';
+}
+
+function getId()
+{
+    return isset($_GET['id']) ? $_GET['id'] : '';
+}
+
+
+function locationDelay($loc, $del)
+{
+    echo '<script type="text/javascript">setTimeout(function(){window.top.location="' . $loc . '"} ,' . $del . ');</script>';
+}
+
+function warnings($warn)
+{
+    if (isset($warn) && $warn) {
+        ?>
+        <div class="warning" role="alert"><?= implode('<br/>', $warn) ?></div> <?php
+        return true;
     }
 }
 
-function LoginForm()
+function showMsg($msg)
 {
-    $mc = '';
-    $mc .= '<div class = "formLogin"  align = "right">';
-    $mc .= '<form action = "" method = "POST" >';
-    $mc .= '<input type = "text" name = "login" placeholder = "Login" />';
-    $mc .= '<input type = "password" name = "passw" placeholder = "Password" />';
-    $mc .= '<input type = "submit" value = "Вход" />';
-    $mc .= '</form >';
-    echo $mc;
-    $mc = '';
-    $mc .= '<div class = "madUser"  align = "right">';
-    $mc .= '<small><a href="reg.php">Зарегистрироваться /</a>';
-    $mc .= '<a href="fogetpassw.php"> Забыли пароль?</a></small>';
-    $mc .= '</div ></div >';
-    echo $mc;
+    if ($msg) {
+        ?>
+        <div class="warning" role="alert"><?= $msg ?></div>
+    <?php
+    }
 }
+

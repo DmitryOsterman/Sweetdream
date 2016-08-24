@@ -19,7 +19,7 @@ $items = GetMenuList();
                         Edit
                     </button>
                     <a href="?section=menu&action=delete&id=<?= $item['id'] ?>" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Вы уверены?');">
+                       onclick="return confirm('Вы уверены?');">
                         Delete</a>
                 </td>
             </tr>

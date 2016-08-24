@@ -51,7 +51,7 @@ h2, h1 {
 }
 
 .headerContainer {
-    min-height: 148px;
+    min-height: 115px;
     background-color: #e6faf5;
     /*padding-top: 10px;
     padding-right: 0;
@@ -69,7 +69,7 @@ h2, h1 {
 .titleSite {
     float: left;
     width: 400px;
-    padding: 10px;
+    padding-left: 10px;
     color: #553e34;
 }
 
@@ -205,11 +205,13 @@ input.find {
     border-bottom: 1px solid #E5E5E5;
 }
 
-.mainCatalog a:hover, .upMenu a:hover, .userMenu a:hover {
+.mainCatalog a:hover, .upMenu a:hover {
     background: #F5F5F5;
     color: green;
-    /*font-weight: bold;*/
-    /*border: 2px solid red;*/
+}
+
+.userMenu a:hover {
+    text-decoration: underline;
 }
 
 .searchGoods a:hover {
@@ -230,7 +232,7 @@ input.find {
     margin: 0;
     padding: 0;
     list-style: none;
-    background: #FCF8E3;
+    background: #fcf8e3;
 }
 
 .subCatalog {
@@ -352,11 +354,48 @@ input.find {
 /*================================================*/
 
 .formLogin {
-    display: none;
+    padding: 20px;
+    text-align: center;
+    display: block;
+    width: 220px;
+    background-color: #fcf8e3;
+    margin: 0 auto;
 }
 
+.formLogin input {
+    height: 24px;
+    margin: 5px;
+}
 
+#closeFormLogin {
+    display: block;
+    text-align: right;
+    text-decoration: none;
+}
 
+.warning {
+    background-color: greenyellow;
+    padding: 20px;
+    text-align: center;
+}
+
+.userForm {
+    background-color: #e6faf5;
+    padding: 20px;
+}
+
+.submitButton {
+    margin: 20px;
+    background-color: #553e34;
+    color: silver;
+}
+
+.headerEditor {
+    background-color: #553e34;
+    padding: 5px;
+    text-align: center;
+    color: white;
+}
 
 
 

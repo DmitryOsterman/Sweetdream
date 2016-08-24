@@ -9,35 +9,14 @@ function AddMenuItem($name, $path = '')
     }
 }
 
-function EditMenuItem($id, $name, $path = '')
-{
-    $sql = "UPDATE upmenu SET name=?, link=? WHERE id=?";
-    $sth = Db()->prepare($sql);
-    if (!$sth->execute([$name, $path, $id])) {
-        print_r($sth->errorInfo());
-        die;
-    }
-}
-
 function DeleteMenuItem($id)
 {
-    $sql = "DELETE FROM upmenu WHERE id=?";
+    $sql = "DELETE FROM upmenu WHERE id=? LIMIT 1";
     $sth = Db()->prepare($sql);
-    if (!$sth->execute([$id])) {
+    if (!$sth->execute([$id])){
         print_r($sth->errorInfo());
         die;
     }
-}
-
-function GetMenuItem($id)
-{
-    $sql = "SELECT * FROM upmenu WHERE id=?";
-    $sth = Db()->prepare($sql);
-    if (!$sth->execute([$id])) {
-        print_r($sth->errorInfo());
-        die;
-    }
-    return $sth->fetch();
 }
 
 function GetMenuList()
@@ -48,16 +27,38 @@ function GetMenuList()
         print_r($sth->errorInfo());
         die;
     }
-    return $sth->fetchAll();
+    return $sth->fetchall();
 }
 
-function FindMenuItem($params = [])
+function GetMenuItem($id)
+{
+    $sql = "SELECT * FROM upmenu where id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return $sth->fetch();
+}
+
+function UpdateMenuItem($id, $name, $path = '')
+{
+    $sql = "UPDATE upmenu SET name=?, link=? WHERE id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$name, $path, $id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+}
+
+function FindMenuItem ($params=[])
 {
     $keys = array_keys($params);
     $values = array_values($params);
 
     $where = array_map(function($a){return $a.'=?';}, $keys);
     $sql = "SELECT * FROM upmenu WHERE ".implode(' AND ', $where);
+
     $sth = Db()->prepare($sql);
     if (!$sth->execute($values)) {
         print_r($sth->errorInfo());
@@ -69,7 +70,8 @@ function FindMenuItem($params = [])
 function ValidateMenuItemForm($data)
 {
     $errors = [];
-    if (!$data['name']) {
+    if (!$data['name']) // if empty
+    {
         $errors[] = 'Необходимо ввести название меню';
     }
     return $errors;

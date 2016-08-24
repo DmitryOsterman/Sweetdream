@@ -1,0 +1,19 @@
+`id`, `first_name`, `second_name`, `address`, `city`, `zip_code`, `phone`, `email`
+
+$id, $first_name, $second_name, $address, $city, $zip_code, $phone, $email
+
+id, first_name, second_name, address, city, zip_code, phone, email
+
+'id', 'first_name', 'second_name', 'address', 'city', 'zip_code', 'phone', 'email'
+
+$_POST['id'], $_POST['first_name'], $_POST['second_name'], $_POST['address'], $_POST['city'], $_POST['zip_code'], $_POST['phone'], $_POST['email']
+
+<th>id</th>
+<th>Имя</th>
+<th>Фамилия</th>
+<th>Адрес</th>
+<th>Город</th>
+<th>ZIP код</th>
+<th>Телефон</th>
+<th>E mail</th>
+			

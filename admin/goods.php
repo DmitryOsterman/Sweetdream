@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once('./models/goods.php');
 require_once('./models/catalog.php');
 

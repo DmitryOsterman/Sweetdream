@@ -46,14 +46,14 @@ else {
             <?php print_catalog(0, $item['parent_id']) ?>
         </select>
     </div>
-    <div class="form-group">
-        <label for="price">Цена</label>
+    <div class="form-group col-xs-6">
+        <label for="price">Цена, руб</label>
         <input type="text" class="form-control" id="price" name="price" placeholder="Цена товара"
                value="<?= $item['price'] ?>">
     </div>
-    <div class="form-group">
+    <div class="form-group col-xs-6">
         <label for="amount">Остаток на складе</label>
-        <input type="text" class="form-control" id="amount" name="amount" placeholder="Остаток на складе"
+        <input type="number" class="form-control" id="amount" name="amount" placeholder="Остаток на складе"
                value="<?= $item['amount'] ?>">
     </div>
     <div class="form-group">
@@ -65,7 +65,10 @@ else {
                     <img src="<?= ImgUrl() . $item['img_link'] ?>" class="img-thumbnail" width="250">
                     <p></p>
                     <p class="text-center">
-                        <a href="?section=goods&action=delete-img&id=<?= $item['id'] ?>" class="btn btn-danger" onclick="return confirm('Вы уверены');">Удалить картинку</a>
+                        <a href="?section=goods&action=delete-img&id=<?= $item['id'] ?>"
+                           class="btn btn-danger"
+                           onclick="return confirm('Вы уверены');">Удалить картинку
+                        </a>
                     </p>
                 </div>
             </div>

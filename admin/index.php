@@ -12,4 +12,7 @@ switch ($section) {
     case 'goods':
         require_once('./goods.php');
         break;
+    case 'users':
+        require_once('./users.php');
+        break;
 }

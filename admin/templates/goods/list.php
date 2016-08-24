@@ -7,9 +7,10 @@ if (!isset($category_id)) {
 $items = GetProductList($category_id);
 ?>
 <div class="page-header">
-    <h4>Продукция</h4>
-    <form class="form-inline">
-        <select onchange="location.href='?section=goods&category_id='+this.value" class="form-control">
+    <h4>Продукция по каталогам</h4>
+    <form class="container-fluid" role="form">
+        <select onchange="location.href='?section=goods&category_id='+this.value"
+                class="form-control container-fluid">
             <?php print_catalog(0, $category_id) ?>
         </select>
     </form>

@@ -1,5 +1,5 @@
-﻿<?php
-require_once ('./models/catalog.php');
+<?php
+require_once('./models/catalog.php');
 
 $action = getAction();
 switch ($action) {
@@ -7,38 +7,50 @@ switch ($action) {
         render('catalog', 'list');
         break;
     case 'new':
+        // вызов формы update/add
         render('catalog', 'new');
         break;
     case 'edit':
+        // вызов формы update/add
         render('catalog', 'edit');
         break;
+
     case 'add':
-        $errors = ValidateCatalogItemForm($_POST);
+        // форма передала:
+        // method="post" action="?section=catalog&action='add'...
+        $errors = ValidateCatalogItemForm($_POST); //проверка - не пусто
         if ($errors) {
             render('catalog', 'new', ['errors' => $errors]);
         } else {
-            if (FindCatalogItem(['name' => $_POST['name']])) {
-                render('catalog', 'new', ['errors' => ['Такая категория уже есть']]);
+            if (FindCatalogItem(['name' => $_POST['name']])) { //проверка - повторяется?
+                render('catalog', 'new', ['errors' => ['Такой пункт меню уже есть']]);
             } else {
-                AddCatalogItem($_POST['name'], $_POST['parent_id']);
-                header('Location: ?section=catalog');
+                AddCatalogItem($_POST['name'], $_POST['path'], $_POST['parent_id']);
+                render('catalog', 'new', ['message' => 'Изменения сохранены']);
+                locationDelay("?section=catalog", 2000);
             }
         }
         break;
+
     case 'update':
-        $errors = ValidateCatalogItemForm($_POST);
+        // method="post" action="?section=catalog&action='update'...
+        // вызов формы update/add
+        $errors = ValidateCatalogItemForm($_POST); //проверка - не пусто
         if ($errors) {
             render('catalog', 'edit', ['errors' => $errors]);
         } else {
-            EditCatalogItem(getId(), $_POST['name'], $_POST['parent_id']);
+            UpdateCatalogItem(getId(), $_POST['name'], $_POST['path'], $_POST['parent_id']);
             render('catalog', 'edit', ['message' => 'Изменения сохранены']);
+            locationDelay("?section=catalog", 20000);
         }
         break;
+
     case 'delete':
-        DeleteCatalogItem(getId());
+        DeleteCatalogItem(GetId());
         header('Location: ?section=catalog');
         break;
+
     default:
         print 'Это действие я еще обрабатывать не умею :(';
         break;
-}
+};
