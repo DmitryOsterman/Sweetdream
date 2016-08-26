@@ -77,21 +77,21 @@ function checkUser()
 //        print_r($user);
 //        echo '</pre>';
 
-    if (isset($_POST['login']) && isset($_POST['passw'])) {
+    if (isset($_POST['login']) && isset($_POST['password'])) {
 
         $user = FindUserItem(['email' => $_POST['login']]);
 
         if ($_POST['login'] === $user[0]['email'] &&
-            md5($_POST['passw']) === $user[0]['password']
+            md5($_POST['password']) === $user[0]['password']
         ) {
             $_SESSION['sess_login'] = $_POST['login'];
-            $_SESSION['sess_pass'] = $_POST['passw'];
+            $_SESSION['sess_pass'] = $_POST['password'];
             $_SESSION['sess_id'] = $user[0]['id'];
             //          " Entering!";
             return true;
         } else {
             //          " Not Enter";
-            $errors[] = 'Неверные логин и/или пароль';
+            $errors[] = 'Неверные логин и/или пароль ';
         }
     } else {
         if (isset($_SESSION['sess_login']) && isset($_SESSION['sess_pass'])) {
@@ -118,9 +118,14 @@ function loginButton()
 {
     if (isset($_SESSION['sess_login'])) {
         ?>
-        <a href="?action=edit<?= '&id=' . $_SESSION['sess_id'] ?>" id='siteLogin'>
+        <a href="?action=edit<?= '&id=' . $_SESSION['sess_id'] ?>"
+         id='siteLogin'>
             <?= $_SESSION['sess_login'] ?>
         </a>
+<!--        <a href="?action=edit--><?//= '&id=' . $_SESSION['sess_id'] ?><!--" id='siteLogin'>-->
+<!--            --><?//= $_SESSION['sess_login'] ?>
+<!--        </a>-->
+
         <a href='?action=exit'>
             <small>x</small>
         </a>

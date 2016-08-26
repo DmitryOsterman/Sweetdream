@@ -36,7 +36,7 @@ switch ($action) {
 //        header('Location: ?section=goods&category_id=' . $_POST['category_id']);
 
     case 'update':
-        $errors = ValidateUserItem($_POST);
+        $errors = ValidateUserItemAdmin($_POST);
         if ($errors) {
             render('users', 'edit', ['errors' => $errors]);
         } else {

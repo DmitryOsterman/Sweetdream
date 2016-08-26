@@ -35,7 +35,7 @@ if ($_POST) {
 <div class="userForm">
     <form method="post"
           action="?&action=<?= $item['id'] ? 'updateUser' : 'addUser' ?>&id=<?= $item['id'] ?>">
-        <div class="">
+        <div id="mylightbox">
 
             <div class="col-xs-6">
                 <label for="first_name">Имя</label>

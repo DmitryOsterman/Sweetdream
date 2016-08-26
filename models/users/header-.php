@@ -13,8 +13,8 @@
             charset="utf-8"></script>
     <link href="//cdn.rawgit.com/noelboss/featherlight/1.5.0/release/featherlight.min.css" type="text/css"
           rel="stylesheet"/>
-<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"-->
-<!--          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
 
     <script type="text/javascript" src="../js/mystyle.js"></script>
 </head>
@@ -29,12 +29,12 @@
         </div>
 
         <ul class="userMenu">
-            <li><a href="admin">Админ</a></li>
+            <!--            <li><a href="#" id='siteLogin'>Войти </a></li>-->
             <li><? loginButton() ?></li>
             <li><a href="#">Помощь</a></li>
             <li><? cartButton() ?></li>
-
         </ul>
+
 
         <div class="searchGoods">
             <form action="search">
