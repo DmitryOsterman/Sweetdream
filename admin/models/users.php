@@ -60,9 +60,9 @@ function ValidateUserItemAdmin($data)
     if (!$data['first_name']) {
         $errors[] = 'Необходимо ввести Имя';
     }
-    if (!$data['second_name']) {
-        $errors[] = 'Необходимо ввести Фамилию';
-    }
+//    if (!$data['second_name']) {
+//        $errors[] = 'Необходимо ввести Фамилию';
+//    }
 //    if (!$data['address']) {
 //        $errors[] = 'Необходимо ввести Имя';
 //    }

@@ -38,6 +38,17 @@ function print_menu()
     mysqli_close($link);
 }
 
+function print_privateMenu()
+{
+    ?>
+    <ul class="privateMenu" id="privateMenu">
+        <li><a href="?action=editMode<?=
+            '&id=' .
+            $_SESSION['sess_id'] ?>" id='siteLogin'>Профиль</a></li>
+        <li><a href='?action=exit'>Выход</a></li>
+    </ul>
+<?
+}
 
 // ----------- sessions ----------------
 function startSession()
@@ -87,6 +98,7 @@ function checkUser()
             $_SESSION['sess_login'] = $_POST['login'];
             $_SESSION['sess_pass'] = $_POST['password'];
             $_SESSION['sess_id'] = $user[0]['id'];
+            $_SESSION['sess_name'] = $user[0]['first_name'] ? : $user[0]['email'];
             //          " Entering!";
             return true;
         } else {
@@ -118,23 +130,15 @@ function loginButton()
 {
     if (isset($_SESSION['sess_login'])) {
         ?>
-        <a href="?action=edit<?= '&id=' . $_SESSION['sess_id'] ?>"
-         id='siteLogin'>
-            <?= $_SESSION['sess_login'] ?>
-        </a>
-<!--        <a href="?action=edit--><?//= '&id=' . $_SESSION['sess_id'] ?><!--" id='siteLogin'>-->
-<!--            --><?//= $_SESSION['sess_login'] ?>
-<!--        </a>-->
-
-        <a href='?action=exit'>
-            <small>x</small>
-        </a>
-    <?
+        <a href="#"><?= $_SESSION['sess_name'] ?></a><?
+        print_privateMenu();
     } else {
-        ?> <a href="?action=login" id='siteLogin'>Войти</a> <?
+        require_once('./models/formLogin.php');
+        ?> <a href="#" onclick="return toggleElemById('f_login')">Войти</a> <?
     }
-//    location.href='?section=users&action=edit&id=<?= $item['id']
 }
+
+//<onMouseOver="" onMouseOut="">
 
 function cartButton()
 {
@@ -157,6 +161,7 @@ function cartButton()
 }
 
 
+// -----------  ----------------
 function getAction()
 {
     return isset($_GET['action']) ? $_GET['action'] : 'show';
@@ -191,3 +196,8 @@ function showMsg($msg)
     }
 }
 
+
+function phpAlert($alr)
+{
+    echo "<script async='async' >alert('$alr');</script>";
+}

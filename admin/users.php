@@ -32,18 +32,27 @@ switch ($action) {
         }
         break;
 
-
-//        header('Location: ?section=goods&category_id=' . $_POST['category_id']);
-
     case 'update':
         $errors = ValidateUserItemAdmin($_POST);
         if ($errors) {
             render('users', 'edit', ['errors' => $errors]);
         } else {
-            EditUserItem(getId(), $_POST['first_name'], $_POST['second_name'],
-                $_POST['address'], $_POST['zip_code'],
-                $_POST['phone'], $_POST['email'],
-                md5($_POST['password']));
+            if ($_POST['password'] === GetUserItem(getId())['password']) {
+                // Password not changed!
+
+                EditUserItem(getId(), $_POST['first_name'], $_POST['second_name'],
+                    $_POST['address'], $_POST['zip_code'],
+                    $_POST['phone'], $_POST['email'],
+                    $_POST['password']);
+
+            } else {
+                // Password changed!
+
+                EditUserItem(getId(), $_POST['first_name'], $_POST['second_name'],
+                    $_POST['address'], $_POST['zip_code'],
+                    $_POST['phone'], $_POST['email'],
+                    md5($_POST['password']));
+            };
             render('users', 'edit', ['message' => 'Изменения сохранены']);
             locationDelay("?section=users", 9000);
         }

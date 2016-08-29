@@ -58,9 +58,9 @@ function ValidateUserItem($data)
 {
     $errors = [];
 
-//    if (!$data['first_name']) {
-//        $errors[] = 'Необходимо ввести Имя';
-//    }
+    if (!$data['first_name']) {
+        $errors[] = 'Необходимо ввести Имя';
+    }
 //    if (!$data['second_name']) {
 //        $errors[] = 'Необходимо ввести Фамилию';
 //    }
@@ -98,7 +98,6 @@ function FindUserItem($params = [])
     }
     return $sth->fetchAll();
 }
-
 
 function renderUser($params = [])
 {

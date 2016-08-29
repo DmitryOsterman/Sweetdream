@@ -53,9 +53,10 @@ $items = GetProductList($category_id);
                             onclick="location.href='?section=goods&action=edit&id=<?= $item['id'] ?>'">
                         Edit
                     </button>
-                    <a href="?section=goods&action=delete&id=<?= $item['id'] ?>" class="btn btn-danger btn-sm"
+                    <a href="?section=goods&action=delete&id=<?= $item['id'] ?>"
+                       class="btn btn-danger btn-sm"
                        onclick="return confirm('Вы уверены?');">
-                        Delete</a>
+                       Delete</a>
                 </td>
             </tr>
         <?php endforeach; ?>

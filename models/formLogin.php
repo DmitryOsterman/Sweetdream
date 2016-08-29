@@ -1,5 +1,5 @@
 <div class="formLogin" id="f_login">
-    <a href="?action=show" id="closeFormLogin">X</a>
+    <a href="#" onclick="toggleElemById('f_login')" id="closeFormLogin" >X</a>
     <form action="?action=checkIn" method="POST">
         <label for="f_login">Введите логин</label>
         <input type="text" id="f_login" name="login" placeholder="E-mail"/>
@@ -16,10 +16,3 @@
             <a href="?action=forgetPass"> Забыли пароль?</a></small>
     </div>
 </div>
-
-
-<!---->
-<!--                <div data-featherlight data-featherlight-filter="a"-->
-<!--                     data-featherlight-type="ajax">-->
-<!--                    <a href="first">Hello</a>-->
-<!--                <a href="second" data-featherlight-type="text">World</a>-->

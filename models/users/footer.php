@@ -1,4 +1,4 @@
-<div class="footerContainer">
+<div class="footer">
 
 <div class="copyRight">
     <div class="sawLine"></div>

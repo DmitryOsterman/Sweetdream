@@ -34,7 +34,7 @@ if ($_POST) {
 <?php endif; ?>
 <form method="post" action="?section=users&action=<?= $item['id'] ? 'update' : 'add' ?>&id=<?= $item['id'] ?>">
     <div class="col-xs-6">
-        <label for="first_name">Имя</label>
+        <label for="first_name">Имя *</label>
         <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Имя"
                value="<?= $item['first_name'] ?>">
     </div>
@@ -59,14 +59,15 @@ if ($_POST) {
                value="<?= $item['phone'] ?>">
     </div>
     <div class="col-xs-4">
-        <label for="email">E mail</label>
+        <label for="email">E mail *</label>
         <input type="text" class="form-control" id="email" name="email" placeholder="E mail"
                value="<?= $item['email'] ?>">
     </div>
     <div class="col-xs-4">
-        <label for="password">Password</label>
+        <label for="password">Password *</label>
         <input type="password" class="form-control" id="password" name="password"
                placeholder="password" value="<?= $item['password'] ?>">
     </div>
+    <p>* - поля обязательные к заполнению</p>
     <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>

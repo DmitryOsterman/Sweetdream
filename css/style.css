@@ -1,7 +1,7 @@
 /*-------------  рамки. Позже - убрать-------------*/
 .userMenuContainer, .upMenu, .catalogContainer, .siteContainer,
 .searchGoods, .goodsContainer, .topSale, .topSaleContainer, .reviewContainer,
-.footerContainer {
+.footer {
     /*     border: 1px dashed darkred;*/
 }
 
@@ -32,7 +32,7 @@ h2, h1 {
 }
 
 .goodsContainer, .topSaleContainer,
-.footerContainer, .catalogContainer, .mainCatalog,
+.catalogContainer, .mainCatalog,
 .reviewContainer {
     background-color: #e6faf5;
 }
@@ -97,7 +97,7 @@ h2, h1 {
     vertical-align: middle;
 }
 
-.userMenu a {
+.userMenu li > a {
     display: block;
     padding: 2px 0;
     color: #795a4d;
@@ -129,7 +129,7 @@ input.find {
 
 .store {
     clear: both;
-    height: 0px;
+    height: 740px;
     margin: 0;
     padding: 0;
 }
@@ -205,13 +205,20 @@ input.find {
     border-bottom: 1px solid #E5E5E5;
 }
 
-.mainCatalog a:hover, .upMenu a:hover {
+.mainCatalog a:hover,
+.upMenu a:hover {
     background: #F5F5F5;
     color: green;
 }
 
 .userMenu a:hover {
     text-decoration: underline;
+}
+
+.privateMenu a:hover {
+    text-decoration: none;
+    background-color: #f5f5f5;
+    color: green;
 }
 
 .searchGoods a:hover {
@@ -239,7 +246,8 @@ input.find {
     display: none;
 }
 
-.mainCatalog > li:hover .subCatalog {
+.mainCatalog > li:hover .subCatalog,
+.userMenu > li:hover .privateMenu {
     display: block;
 }
 
@@ -291,18 +299,19 @@ input.find {
 
 /*==============================================*/
 
-.footerContainer {
-    clear: both;
-    /*width: 1000px;*/
-    /*min-height: 380px;*/
-    /*margin: 10px 0;*/
+.footer {
+    /*clear: both;*/
+    position: absolute;
+    /*bottom: 0;*/
+    width: inherit;
+    height: 40px;
+    background-color: inherit;
+    /*#f5f5f5;*/
+    text-align: center;
 }
 
 .topSaleContainer {
-    /*margin: 10px 0;*/
-    /*width: 780px;*/
-    /*height: 350px;*/
-
+    height: 380px;
     padding-bottom: 10px;
 }
 
@@ -344,19 +353,30 @@ input.find {
 
 /*================================================*/
 
-.copyRight {
-    text-align: center;
-    min-height: 28px;
+/*.copyRight {*/
+/*text-align: center;*/
+/*min-height: 28px;*/
 
-}
+/*}*/
 
 /*================================================*/
 /*================================================*/
+
+/*#formLogin {*/
+/*display:none;*/
+/*}*/
 
 .formLogin {
+    position: absolute;
+    z-index: 5;
+    left: 45%;
+    top: 40px;
+    box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
     padding: 20px;
     text-align: center;
-    display: block;
+    display: none;
     width: 220px;
     background-color: #fcf8e3;
     margin: 0 auto;
@@ -381,13 +401,31 @@ input.find {
 
 .userForm {
     background-color: #e6faf5;
-    padding: 20px;
+    padding: 10px;
+}
+
+.userForm label {
+    padding: 8px;
+    width: 200px;
+    display: inline-block;
+
+}
+
+.userForm input {
+    display: inline-block;
+    left: 150px;
+    width: 300px;
+    padding: 8px;
 }
 
 .submitButton {
-    margin: 20px;
+    padding: 10px;
     background-color: #553e34;
-    color: silver;
+    color: white;
+}
+
+.submitButton:hover {
+    color: green;
 }
 
 .headerEditor {
@@ -397,6 +435,37 @@ input.find {
     color: white;
 }
 
+.privateMenu {
+    position: absolute;
+    z-index: 10;
+    top: 35px;
+    box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
+    display: none;
+    background-color: #fcf8e3;
+    padding: 0;
+    margin: 0;
+}
+
+.privateMenu li {
+    list-style: none;
+    width: 120px;
+    margin: 0;
+    display: block;
+
+}
+
+.privateMenu li > a {
+    border: none;
+    text-align: left;
+    display: block;
+    padding: 8px 14px;
+}
+
+.privateMenu li:last-child {
+    border-top: thin solid #e5e5e5;
+}
 
 
 
