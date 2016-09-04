@@ -40,7 +40,8 @@ if ($_POST) {
             <div class="">
                 <label for="first_name">Имя *</label>
                 <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Имя"
-                       value="<?= $item['first_name'] ?>">
+                       value="<?= $item['first_name'] ?>"
+                    >
             </div>
             <div class="">
                 <label for="second_name">Фамилия</label>
@@ -54,12 +55,12 @@ if ($_POST) {
             </div>
             <div class="">
                 <label for="zip_code">Почтовый индекс</label>
-                <input type="text" class="form-control" id="zip_code" name="zip_code" placeholder="ZIP код"
+                <input type="number" class="form-control" id="zip_code" name="zip_code" placeholder="ZIP код"
                        value="<?= $item['zip_code'] ?>">
             </div>
             <div class="">
                 <label for="phone">Телефон</label>
-                <input type="text" class="form-control" id="phone" name="phone" placeholder="+7(xxx)xxxxxxx"
+                <input type="tel" class="form-control" id="phone" name="phone" placeholder="+7(xxx)xxxxxxx"
                        value="<?= $item['phone'] ?>">
             </div>
             <div class="">
@@ -69,14 +70,17 @@ if ($_POST) {
             </div>
             <div class="">
                 <label for="password">Password *</label>
-                <input onclick="confirm ('Change password?')"
-                       type="password" class="form-control" id="password"
-                       name="password" placeholder="Password"
-                       value="<?= $item['password'] ?>">
+                <input
+                    <? if ($item['id']) : ?>onclick="confirm ('Change password?')" <? endif ?>
+
+                    type="password" class="form-control" id="password"
+                    name="password" placeholder="Password"
+                    value="<?= $item['password'] ?>">
             </div>
             <p>* - поля обязательные к заполнению</p>
         </div>
         <button type="submit" class="submitButton">Сохранить</button>
+
+
     </form>
 </div>
-

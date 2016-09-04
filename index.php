@@ -61,6 +61,7 @@ switch ($action) {
                 locationDelay("?section=show", 2000);
             }
         }
+        require_once('./models/users/formUser.php');
         require_once('./models/footer.php');
         break;
 
@@ -103,6 +104,7 @@ switch ($action) {
             renderUser(['message' => 'Изменения сохранены']);
             locationDelay("?section=show", 2000);
         }
+        require_once('./models/users/formUser.php');
         require_once('./models/footer.php');
         break;
 

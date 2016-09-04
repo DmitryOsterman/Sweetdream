@@ -1,9 +1,10 @@
 // ========= полная загрузка странички с использованием jQuery: ========
+//......................................................................
 $(document).ready(function () {
 
-    console.log($('#idSearch').attr('name'));
+//    console.log($('#idSearch').attr('name'));
 
-// ==========   карусель топ покупок  =============================
+// ==========   карусель топ покупок  ==================================
     $(function () {
         $(".topSale").jCarouselLite({
             auto: 2000,
@@ -12,8 +13,10 @@ $(document).ready(function () {
         });
     });
 
+//.........................jQuery................................
 });
 
+// ======================= чистый JS ===================================
 function toggleElemById(ob) {
     var el = document.getElementById(ob);
     el.style.display = (el.style.display != 'block' ? 'block' : 'none' );
