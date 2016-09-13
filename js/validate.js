@@ -59,7 +59,10 @@ function handleNumber(e) {
     if (e.ctrlKey || e.altKey || e.metaKey) return true;
     var char = getChar(e);
     if (!char) return true; // спец. символ - не обрабатываем
-    if (!isCharNumber(char)) {
+//    if (!isCharNumber(char)) {
+//        return false; // буквы - не обрабатываем
+//    }
+    if (+char) {
         return false; // буквы - не обрабатываем
     }
     this.value = char(); // выводим

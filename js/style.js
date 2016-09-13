@@ -12,6 +12,8 @@ $(document).ready(function () {
             visible: 5
         });
     });
+// ==========     ==================================
+
 
 //.........................jQuery................................
 });
@@ -21,3 +23,6 @@ function toggleElemById(ob) {
     var el = document.getElementById(ob);
     el.style.display = (el.style.display != 'block' ? 'block' : 'none' );
 }
+
+// ==========    ==================================
+

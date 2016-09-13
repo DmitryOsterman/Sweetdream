@@ -68,22 +68,22 @@ switch ($action) {
         break;
 }
 
-function print_catalog($parent_id = 0, $selected = 0)
-{
-    $items = GetCatalogList($parent_id);
-    foreach ($items as $item) {
-        $active = '';
-        $level = $parent_id ? '..... ' : '';
-        if ($item['id'] == $selected) {
-            $active = 'selected="selected"';
-        }
-        print '<option value="' . $item['id'] . '" ' . $active . '>' . $level . $item['name'] . '</option>';
-
-        if ($children = GetCatalogList($item['id'])) {
-            print_catalog($item['id'], $selected);
-        }
-    }
-}
+//function print_catalog($parent_id = 0, $selected = 0)
+//{
+//    $items = GetCatalogList($parent_id);
+//    foreach ($items as $item) {
+//        $active = '';
+//        $level = $parent_id ? '..... ' : '';
+//        if ($item['id'] == $selected) {
+//            $active = 'selected="selected"';
+//        }
+//        print '<option value="' . $item['id'] . '" ' . $active . '>' . $level . $item['name'] . '</option>';
+//
+//        if ($children = GetCatalogList($item['id'])) {
+//            print_catalog($item['id'], $selected);
+//        }
+//    }
+//}
 
 /*
 function resize_image($img, &$error = '')

@@ -2,8 +2,7 @@
 
 function Db()
 {
-    require_once('./admin/config/db.init');
-
+    require_once('./config/db.init');
     global $dbh;
     try {
         if (!$dbh) {
@@ -12,43 +11,202 @@ function Db()
     } catch (PDOException $e) {
         die("Error!: " . $e->getMessage() . "<br/>");
     }
-
     return $dbh;
 }
 
-
-// print_menu - переделать исп. Db()
-function print_menu()
+function GetCatalogList($parent_id = 0)
 {
-    $link = mysqli_connect("localhost", "admin_sd", "df9(s1", "sweetdream");
-    /* проверка подключения */
-    if (mysqli_connect_errno()) {
-        printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-        exit();
-    };
-    if ($res = mysqli_query($link, 'SELECT * FROM `upmenu` WHERE 1', MYSQLI_USE_RESULT)) {
-        echo "<ul class='upMenu'>";
-        while ($content = mysqli_fetch_array($res, MYSQLI_NUM)) {
-            echo "<li><a href=$content[2]> $content[1] </a></li>";
-        };
-        echo "</ul>";
-        mysqli_free_result($res);
+    $sql = "SELECT * FROM catalog WHERE parent_id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$parent_id])) {
+        print_r($sth->errorInfo());
+        die;
     }
-    /* закрываем подключение */
-    mysqli_close($link);
+    return $sth->fetchall();
 }
 
-function print_privateMenu()
+function GetCatalogItem($id)
+{
+    $sql = "SELECT * FROM catalog where id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return $sth->fetch();
+}
+
+function GetProductItem($id)
+{
+    $sql = "SELECT * FROM goods WHERE id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return $sth->fetch();
+}
+
+function GetProductList($category_id)
+{
+    $sql = "SELECT * FROM goods WHERE parent_id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$category_id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return $sth->fetchAll();
+}
+
+function getUpmenu()
+{
+    $sql = "SELECT * FROM `upmenu` WHERE 1";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute()) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return $sth->fetchall();
+}
+
+function ImgUrl()
+{
+    return "/img/";
+}
+
+
+function printUpmenu()
+{
+    $items = getUpmenu();
+    echo "<ul class='upMenu'>";
+    foreach ($items as $item) {
+        $link = '?section=common&action=' . $item['link'];
+        echo "<li><a href='$link'> $item[name] </a></li>";
+    }
+    echo "</ul>";
+}
+
+function printMenuCatalog()
+{
+    $items = GetCatalogList();
+    echo "<div class='catalogContainer'>";
+    echo "<h2>Каталог</h2>";
+    echo "<ul class='mainCatalog'>";
+    foreach ($items as $item) {
+        $children = GetCatalogList($item['id']);
+        echo "<li><a href='#'> $item[name] </a>";
+        if (!$children) continue;
+        echo "<ul class='subCatalog'>";
+
+        foreach ($children as $child) {
+            ?>
+            <li>
+                <a href='#'
+                   onclick="location.href='?section=store&category_id=<?= $child['id'] ?>'">
+                    <?= $child['name'] ?></a>
+            </li>
+        <?php
+        }
+
+        echo "</ul></li>";
+    }
+    echo "</ul></div>";
+}
+
+function showReviews()
 {
     ?>
-    <ul class="privateMenu" id="privateMenu">
-        <li><a href="?action=editMode<?=
-            '&id=' .
-            $_SESSION['sess_id'] ?>" id='siteLogin'>Профиль</a></li>
-        <li><a href='?action=exit'>Выход</a></li>
-    </ul>
-<?
+    <div class="reviewContainer">
+        <h2>Отзывы</h2>
+
+        <div class="customer">
+            <div class="comment">
+                Good shop,
+                Quick delivery
+            </div>
+            <div class="name">Ann</div>
+        </div>
+    </div>
+<?php
 }
+
+function showCommon($actionFile)
+{
+    $file = './page/main/common/' . $actionFile . '.php';
+    if (file_exists($file)) {
+        require_once($file);
+    } else echo("HOLD");
+}
+
+function showCatalogDetail()
+{
+    $category_id = getCategory_id();
+    $items = GetProductList($category_id);
+    echo "<h4>" . GetCatalogItem(GetCatalogItem($category_id)['parent_id'])['name'];
+    echo " / " . GetCatalogItem($category_id)['name'] . "</h4>";
+
+    ?>
+    <div class="flowContainer">
+    <?php
+    foreach ($items as $item) {
+        ?>
+        <div class='menuItem'>
+            <?php if ($item['img_link']) {
+                echo "<img src = " . ImgUrl() . $item['img_link'] . ">";
+            } else {
+                echo "<img alt = 'prepare' src = " . ImgUrl() . "no_img.png>";
+            }
+            ?>
+            <a href="<?= $_SERVER['REQUEST_URI'] ?>&id=<?= $item['id'] ?>">
+                <div class='name'> <?= $item['name'] ?></div>
+            </a>
+
+            <div class='price'><?= $item['price'] ?> руб.</div>
+
+            <div class='addToCart'>
+                <a href="<?= $_SERVER['REQUEST_URI'] ?>&order=<?= $item['id'] ?>">
+                    В корзину
+                </a>
+            </div>
+        </div>
+    <?php
+    }
+    echo "</div>";
+    return true;
+}
+
+function showItemDetail()
+{
+    if (GetProductItem(getId())) {
+        $file = './page/main/store/itemDetail.php';
+        if (file_exists($file)) {
+            require_once($file);
+        } else echo("HOLD");
+        return true;
+    } else return false;
+}
+
+function showStore()
+{
+    echo "<div class='centerBlock'>";
+
+    if (!getId() == '') {
+        showItemDetail();
+    } else if (!getCategory_id()=='') {
+        showCatalogDetail();
+    } else showCommon('help');
+
+    echo "</div>";
+}
+
+function greetings()
+{
+    $file = './templates/greetings.php';
+    if (file_exists($file)) {
+        require_once($file);
+    } else echo("Missing greetings file");
+}
+
 
 // ----------- sessions ----------------
 function startSession()
@@ -66,7 +224,7 @@ function destroySession()
     }
 }
 
-function initCart()
+function startCart()
 {
     if (isset($_GET['order'])) {
         $new_product = trim(strip_tags($_GET['new_product']));
@@ -75,7 +233,8 @@ function initCart()
         } else {
             $_SESSION['product'] = array($new_product);
         }
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+//        header('Location: ' . $_SERVER['PATH']);
         ob_end_flush();
     }
 }
@@ -126,19 +285,30 @@ function checkUser()
 
 
 // ----------- menu buttons ----------------
+
+function adminButton()
+{
+    require_once('./authorization/formLogin.php');
+    echo "<a href='./admin'>Админ</a>";
+
+//     onclick="return toggleElemById('adminLogin')
+
+}
+
 function loginButton()
 {
     if (isset($_SESSION['sess_login'])) {
         ?>
-        <a href="#"><?= $_SESSION['sess_name'] ?></a><?
-        print_privateMenu();
+        <a href="#"><?= $_SESSION['sess_name'] ?></a>
+        <?php
+        printPrivateMenu();
     } else {
-        require_once('./models/formLogin.php');
-        ?> <a href="#" onclick="return toggleElemById('f_login')">Войти</a> <?
+        require_once('./authorization/formLogin.php');
+        ?>
+        <a href="#" onclick="return toggleElemById('f_login')">Войти</a>
+    <?php
     }
 }
-
-//<onMouseOver="" onMouseOut="">
 
 function cartButton()
 {
@@ -160,16 +330,33 @@ function cartButton()
 
 }
 
+function helpButton()
+{
+    ?>
+    <a href="<?= $_SERVER['PHP_SELF'] ?>?section=common&action=help">Помощь</a>
+<?php
+}
+
 
 // -----------  ----------------
 function getAction()
 {
-    return isset($_GET['action']) ? $_GET['action'] : 'show';
+    return isset($_GET['action']) ? $_GET['action'] : 'about';
+}
+
+function getSection()
+{
+    return isset($_GET['section']) ? $_GET['section'] : '';
 }
 
 function getId()
 {
     return isset($_GET['id']) ? $_GET['id'] : '';
+}
+
+function getCategory_id()
+{
+    return isset($_GET['category_id']) ? $_GET['category_id'] : '';
 }
 
 
@@ -182,22 +369,12 @@ function warnings($warn)
 {
     if (isset($warn) && $warn) {
         ?>
-        <div class="warning" role="alert"><?= implode('<br/>', $warn) ?></div> <?php
+        <div class="centerBlock">
+            <div class="warning"><?= implode('<br/>', $warn) ?>
+            </div>
+        </div>
+        <?php
         return true;
     }
-}
-
-function showMsg($msg)
-{
-    if ($msg) {
-        ?>
-        <div class="warning" role="alert"><?= $msg ?></div>
-    <?php
-    }
-}
-
-
-function phpAlert($alr)
-{
-    echo "<script async='async' >alert('$alr');</script>";
+    return false;
 }

@@ -1,6 +1,6 @@
 <div class="formLogin" id="f_login">
     <a href="#" onclick="toggleElemById('f_login')" id="closeFormLogin" >X</a>
-    <form action="?action=checkIn" method="POST">
+    <form action="?section=store&action=checkIn" method="POST">
         <label for="f_login">Введите логин</label>
         <input type="text" id="f_login" name="login" placeholder="E-mail"/>
 
@@ -12,7 +12,7 @@
     </form>
 
     <div class="madUser">
-        <small><a href="?action=reg">Зарегистрироваться /</a>
-            <a href="?action=forgetPass"> Забыли пароль?</a></small>
+        <small><a href="?action=reg">Зарегистрироваться</a><br>
+            <a href="?section=store&action=forgetPass"> Забыли пароль?</a></small>
     </div>
 </div>

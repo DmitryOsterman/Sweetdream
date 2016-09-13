@@ -1,7 +1,7 @@
-<div class="topSaleContainer">
-    <h2>Лидеры продаж</h2>
+<!--<div class="topSaleContainer">-->
 
     <div class="topSale">
+        <h2>Лидеры продаж</h2>
         <ul>
             <li><a href="#"><img src="img/x1.jpg"></a>
 
@@ -46,4 +46,4 @@
         </ul>
 
     </div>
-</div>
+<!--</div>-->

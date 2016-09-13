@@ -106,3 +106,17 @@ function renderUser($params = [])
     }
 //    require_once('./formUser.php');
 }
+
+function printPrivateMenu()
+{
+    ?>
+    <ul class="privateMenu">
+<!--        id="privateMenu">-->
+
+        <li class='privateMenuFirst'><a href="?section=store&action=editMode<?=
+            '&id=' .
+            $_SESSION['sess_id'] ?>" id='siteLogin'>Профиль</a></li>
+        <li><a href='?action=exit'>Выход</a></li>
+    </ul>
+<?php
+}

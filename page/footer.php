@@ -1,7 +1,6 @@
-<!--<div class="siteContainer">-->
-<!--...-->
+</div><!-- of class="store" -->
 
-<div class="footer copyRight">
+<div class="footer">
     <div class="sawLine"></div>
     <small>
         Made by |} {}. 2016
@@ -9,6 +8,6 @@
 
 </div>
 
-</div>
 </body>
+
 </html>
