@@ -189,15 +189,19 @@ function showItemDetail()
 function showStore()
 {
     echo "<div class='centerBlock'>";
-
     if (!getId() == '') {
         showItemDetail();
-    } else if (!getCategory_id()=='') {
+    } else if (!getCategory_id() == '') {
         showCatalogDetail();
     } else showCommon('help');
-
-    echo "</div>";
+    echo "<div>";
 }
+
+
+// if (!getCategory_id() == '') {
+//        showCatalogDetail();
+//    } else showCommon('help');
+
 
 function greetings()
 {
@@ -261,7 +265,6 @@ function checkUser()
             //          " Entering!";
             return true;
         } else {
-            //          " Not Enter";
             $errors[] = 'Неверные логин и/или пароль ';
         }
     } else {
@@ -288,25 +291,15 @@ function checkUser()
 
 function adminButton()
 {
-    require_once('./authorization/formLogin.php');
     echo "<a href='./admin'>Админ</a>";
-
-//     onclick="return toggleElemById('adminLogin')
-
 }
 
 function loginButton()
 {
     if (isset($_SESSION['sess_login'])) {
-        ?>
-        <a href="#"><?= $_SESSION['sess_name'] ?></a>
-        <?php
         printPrivateMenu();
     } else {
-        require_once('./authorization/formLogin.php');
-        ?>
-        <a href="#" onclick="return toggleElemById('f_login')">Войти</a>
-    <?php
+        printPublicMenu();
     }
 }
 

@@ -1,6 +1,6 @@
 <?php
 if (isset($_SESSION['sess_name'])) {
-echo "<h2>Добро пожаловать ". $_SESSION['sess_name']."!</h2>";
+echo "<h2>Привет ". $_SESSION['sess_name']."!</h2>";
 } else echo "<h2>Добро пожаловать!</h2>";
 ?>
 

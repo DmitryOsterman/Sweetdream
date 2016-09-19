@@ -15,4 +15,8 @@ switch ($section) {
     case 'users':
         require_once('./users.php');
         break;
+
+    case 'orders':
+        require_once('./orders.php');
+        break;
 }

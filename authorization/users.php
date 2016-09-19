@@ -104,19 +104,46 @@ function renderUser($params = [])
     foreach ($params as $key => $value) {
         $$key = $value;
     }
-//    require_once('./formUser.php');
 }
 
 function printPrivateMenu()
 {
     ?>
+    <a href="#"><?= $_SESSION['sess_name'] ?></a>
     <ul class="privateMenu">
-<!--        id="privateMenu">-->
-
         <li class='privateMenuFirst'><a href="?section=store&action=editMode<?=
-            '&id=' .
-            $_SESSION['sess_id'] ?>" id='siteLogin'>Профиль</a></li>
+            '&id=' .$_SESSION['sess_id'] ?>" id='siteLogin'>Профиль</a></li>
         <li><a href='?action=exit'>Выход</a></li>
     </ul>
 <?php
+}
+
+function printPublicMenu()
+{
+    ?>
+    <a href="#">Войти</a>
+<!--    <a href="#" onclick="return toggleElemById('f_login')">Войти</a>-->
+
+    <div class="formLogin" id="f_login">
+<!--        <a href="#" onclick="toggleElemById('f_login')" id="closeFormLogin">X</a>-->
+
+        <form action="?section=store&action=checkIn" method="POST">
+            <label for="f_login">Введите логин</label>
+            <input type="text" id="f_login" name="login" placeholder="E-mail"/>
+
+            <label for="f_password">Введите пароль</label>
+            <input type="password" id="f_password" name="password" placeholder="Password"/>
+
+            <input type="submit" value="Вход">
+            <input type="reset" value="Сброс"/>
+        </form>
+
+        <div class="madUser">
+            <small><a href="?action=reg">Зарегистрироваться</a><br>
+                <a href="?&action=forgetPass">Забыли пароль?</a></small>
+        </div>
+
+    </div>
+<?php
+
 }

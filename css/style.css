@@ -179,7 +179,7 @@ input.find {
     float: right;
     display: block;
     width: 780px;
-    /*min-height: 430px;*/
+    min-height: 370px;
     margin-bottom: 10px;
     margin-top: 10px;
     position: relative;
@@ -256,7 +256,9 @@ input.find {
 }
 
 .mainCatalog > li:hover .subCatalog,
-.userMenu > li:hover .privateMenu {
+.userMenu > li:hover .formLogin,
+.userMenu > li:hover .privateMenu
+{
     display: block;
 }
 
@@ -341,6 +343,9 @@ input.find {
     border-radius: 4px;
 }
 
+.itemDetail p{
+    margin: 5px;
+}
 .itemDetail {
     max-height: 800px;
 }
@@ -357,7 +362,7 @@ input.find {
     padding: 5px;
     max-width: 650px;
     height: 480px;
-    margin: 10px auto;
+    margin: 10px 0;
     -webkit-box-shadow: 0 1px 9px 0 rgba(0, 0, 0, 0.25);
     -moz-box-shadow: 0 1px 9px 0 rgba(0, 0, 0, 0.25);
     box-shadow: 0 1px 9px 0 rgba(0, 0, 0, 0.25);
@@ -484,7 +489,7 @@ input.find {
     position: absolute;
     z-index: 5;
     left: 0;
-    top: 28px;
+    top: 24px;
     box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0 5px 9px 0 rgba(0, 0, 0, 0.5);
@@ -501,7 +506,7 @@ input.find {
     position: absolute;
     width: 0;
     height: 0;
-    left: 50%;
+    left: 20%;
     top: -20px;
     border: 10px none;
     border-color: transparent transparent silver transparent;
@@ -512,7 +517,7 @@ input.find {
     position: absolute;
     width: 0;
     height: 0;
-    left: 50%;
+    left: 20%;
     top: -18px;
     border: 10px solid;
     border-color: transparent transparent #fcf8e3 transparent;

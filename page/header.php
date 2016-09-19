@@ -49,5 +49,4 @@
     </div>
 
     <?php printUpmenu(); ?>
-
 <div class="store">

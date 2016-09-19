@@ -12,12 +12,11 @@ switch ($action) {
 
     case 'checkIn':
         if (checkUser() === true) {
-            header('Location:' . $_SERVER['PHP_SELF']);
+            header('Location: ' . '?action=greetings');
         } else {
             warnings(checkUser());
         }
         break;
-
 
     case 'addUser':
         $errors = ValidateUserItem($_POST);
@@ -79,7 +78,7 @@ switch ($action) {
 
     case 'exit':
         destroySession();
-        header('Location:' . $_SERVER['PHP_SELF']);
+        header('Location:' . $_SERVER['REQUEST_URI']);
         break;
 
 //    default:
