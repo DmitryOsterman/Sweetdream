@@ -38,10 +38,9 @@
         </ul>
 
         <div class="searchGoods">
-            <form action="search">
-                <input type="search" name="Search" id="idSearch" value=""
-                       placeholder="что искать"/>
-                <label for="idSearch"></label>
+            <form method="post" action="?section=store&action=search">
+                <input type="search" name="Search_text" value=""
+                       placeholder="Поиск товаров в магазине"/>
                 <input class="find" type="image" src="../img/find.png"/>
             </form>
         </div>

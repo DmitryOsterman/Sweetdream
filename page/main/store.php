@@ -1,10 +1,5 @@
 <div class="centerBlock">
-
     <?php
-
-    // header('Location: ?action=show');
-
-    //ShowWarnings(startCart());
 
     $action = getAction();
     switch ($action) {
@@ -17,11 +12,6 @@
         case 'checkIn':
 
             if (checkUser() === true) {
-
-
-                // Load Cart by user_id
-//            startCart();
-
 
                 header('Location: ' . '?action=greetings');
             } else {
@@ -55,7 +45,6 @@
             } else {
                 ShowWarnings(checkUser());
                 showStore();
-//            require_once('./models/main.php'); //                        ----????
             }
             break;
 
@@ -110,11 +99,7 @@
                 header('Location: ?section=store&category_id='
                     . $category_id . '&id=' . $product_id);
             }
-
-
             showItemDetail();
-
-
             break;
 
         case 'addFast':
@@ -138,7 +123,11 @@
 //            showCatalogDetail();
             }
 
-//        header('Location: ?section=store&category_id=' . $category_id);
+            break;
+
+        case 'search':
+            echo 'Searching... ' . $_POST['Search_text'].'. ';
+            echo('В разработке');
             break;
 
         case 'exit':
@@ -150,8 +139,5 @@
             echo "Это что такое?";
             break;
     }
-
-    //showStore();
-
     ?>
 </div>

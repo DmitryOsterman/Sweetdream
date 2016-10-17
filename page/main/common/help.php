@@ -8,4 +8,4 @@
 </p>
 
 <button class="submitButton"
-        onclick="location.href='<?= $_SERVER[PHP_SELF] ?>'">Понятно</button>
+        onclick="location.href='<?= $_SERVER['PHP_SELF'] ?>'">Понятно</button>

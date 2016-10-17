@@ -81,7 +81,7 @@ function printUpmenu()
     echo "<ul class='upMenu'>";
     foreach ($items as $item) {
         $link = '?section=common&action=' . $item['link'];
-        echo "<li><a href='$link'> $item[name] </a></li>";
+        echo "<li><a href=" . $link . "> $item[name] </a></li>";
     }
     echo "</ul>";
 }
@@ -97,7 +97,7 @@ function printMenuCatalog()
         ?>
         <li><a href='#'
                onclick="location.href='?section=store&category_id=<?= $item['id'] ?>'">
-                <?= $item['name'] ?></a>
+            <?= $item['name'] ?></a>
         <?php
 
         if (!$children) continue;
@@ -144,9 +144,15 @@ function showCatalogDetail()
 {
     $category_id = getCategory_id();
     $items = GetProductList($category_id);
-    echo "<h4>" . GetCatalogItem(GetCatalogItem($category_id)['parent_id'])['name'];
-    echo " / " . GetCatalogItem($category_id)['name'] . "</h4>";
+    $child = GetCatalogItem($category_id);
+    $parent = GetCatalogItem($child['parent_id']);
 
+    $s = "<h4>";
+    if ($parent) {
+        $s .= $parent['name'] . " / ";
+    }
+    $s .= $child['name'] . "</h4>";
+    echo($s);
     ?>
     <div class="flowContainer">
     <?php
@@ -165,7 +171,7 @@ function showCatalogDetail()
 
             <div class='price'><?= $item['price'] ?> руб.</div>
 
-            <div class='addToCart'>
+            <div class='addToCartButton'>
                 <a href="<?= $_SERVER['REQUEST_URI'] ?>&action=addFast&id=<?= $item['id'] ?>">
                     В корзину
                 </a>
@@ -317,19 +323,17 @@ function loginButton()
 
 function cartButton()
 {
+    $cart = "<a href='" . $_SERVER['PHP_SELF'] . "?section=cart&action=show'>";
+    $cart .= "<img src = '" . ImgUrl() . "basket.png' style='width: 14px'>Корзина";
 
     if (isset($_SESSION['sess_id'])) {
         if (startCart()) {
             $cart_id = startCart();
-            echo "<a href='#'><img src = "
-                . ImgUrl() . "basket.png style='width: 14px'>Корзина (<b>"
-                . CountCartItems($cart_id) . "</b>)</a>";
-
-        } else echo "<a href='#'><img src = "
-            . ImgUrl() . "basket.png style='width: 14px'>Корзина</a>";
-
-    } else echo "<a href='#'><img src = "
-        . ImgUrl() . "basket.png style='width: 14px'>Корзина</a>";
+            $cart .= "(<b>" . CountCartItems($cart_id) . "</b>)";
+        }
+    }
+    $cart .= "</a>";
+    echo($cart);
 }
 
 function helpButton()
@@ -412,6 +416,16 @@ function DeleteCart($id)
     }
 }
 
+function DeleteCartItem($id)
+{
+    $sql = "DELETE FROM cart_items WHERE id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+}
+
 function GetCartItemsList($cart_id)
 {
     $sql = "SELECT * FROM cart_items WHERE cart_id=?";
@@ -434,6 +448,17 @@ function GetCart($id)
     return $sth->fetch();
 }
 
+function GetCartItem($id)
+{
+    $sql = "SELECT * FROM cart_items WHERE id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return $sth->fetch();
+}
+
 function GetUserCart($user_id)
 {
     $sql = "SELECT * FROM carts WHERE user_id=?";
@@ -444,7 +469,6 @@ function GetUserCart($user_id)
     }
     return $sth->fetch();
 }
-
 
 function ValidateCartItem($data)
 {
@@ -461,7 +485,6 @@ function ValidateCartItem($data)
     return $errors;
 }
 
-
 function GetCartId()
 {
     if (isset($_SESSION['sess_id'])) {
@@ -470,7 +493,6 @@ function GetCartId()
     }
     return false;
 }
-
 
 function AddCartItem($cart_id, $product_id, $amount)
 {
@@ -482,7 +504,6 @@ function AddCartItem($cart_id, $product_id, $amount)
     }
     return Db()->lastInsertId();
 }
-
 
 function UpdateCartItem($amount, $id)
 {
@@ -510,3 +531,75 @@ function AddUpdateCartItem($cart_id, $product_id, $amount)
         AddCartItem($cart_id, $product_id, $amount);
     }
 }
+
+function ShowCart()
+{
+    if (GetCartId()) {
+        $cart_id = GetCartId();
+        $items = GetCartItemsList($cart_id);
+        $total = 0;
+
+        echo "<H2>Содержимое корзины</H2>";
+        echo "<div class='flowContainer'>";
+        foreach ($items as $item) {
+            $product = GetProductItem($item['product_id']); // смотрим на этот товар из каталога
+
+            ?>
+            <div class='menuItem'>
+                <?php if ($product['img_link']) {
+                    echo "<img src = " . ImgUrl() . $product['img_link'] . ">";
+                } else {
+                    echo "<img alt = 'prepare' src = " . ImgUrl() . "no_img.png>";
+                }
+                ?>
+
+                <a href="<?= $_SERVER['PHP_SELF'] ?>?section=store&id=<?= $product['id'] ?>">
+                    <?= $product['name'] ?>
+                </a>
+
+                <div class=''>В корзине: <?= $item['amount'] ?> шт.</div>
+                <div class=''>По цене: <?= $product['price'] ?> руб.</div>
+                <br>
+
+                <div>
+                    <a class='CartButtonEdit'
+                       href="<?= $_SERVER['PHP_SELF'] ?>?section=cart&action=edit&id=<?= $item['id'] ?>">
+                        Edit
+                    </a>
+                    <a class='CartButtonDelete'
+                       href="<?= $_SERVER['PHP_SELF'] ?>?section=cart&action=delete&id=<?= $item['id'] ?>"
+                       onclick="return confirm('Вы уверены?');">
+                        Delete
+                    </a>
+                </div>
+
+            </div>
+            <?php
+            $total += $item['amount'] * GetProductItem($item['product_id'])['price'];
+        }
+        echo "</div>";
+        ?>
+        <h4>Итого: <?= $total ?> руб.</h4>
+        <button type="submit" class="buttonCart2Order"
+                onclick="return confirm('Вы уверены?');">
+            Оформить заказ
+        </button>
+
+    <?php
+    }
+}
+
+function EditItemCart()
+{
+
+    if (GetCartItem(getId())) {
+        $file = './page/main/cart/itemDetail.php';
+        if (file_exists($file)) {
+            require_once($file);
+        } else {
+            echo("HOLD");
+        }
+        return true;
+    } else return false;
+}
+

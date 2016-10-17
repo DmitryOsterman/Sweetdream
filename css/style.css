@@ -290,7 +290,7 @@ input.find {
     padding: 5px;
     margin: 2px auto 0;
     width: 246px;
-    height: 376px;
+    min-height: 376px;
     text-align: center;
 }
 
@@ -334,7 +334,7 @@ input.find {
     color: #8da760;
 }
 
-.menuItem .addToCart a {
+.menuItem .addToCartButton a {
     position: absolute;
     left: 5px;
     bottom: 5px;
@@ -395,7 +395,41 @@ input.find {
     border-radius: 4px;
 }
 
-.blockFloat .addToCart {
+.buttonCart2Order,
+.CartButtonDelete,
+.CartButtonEdit {
+    text-decoration: none;
+    border: 1px solid #E5E5E5;
+    border-radius: 4px;
+    padding: 5px 15px;
+    /*margin: 4px;*/
+    color: black;
+}
+
+.CartButtonDelete{
+    background-color: indianred;
+}
+.CartButtonDelete:hover{
+    background-color: orangered;
+}
+
+.CartButtonEdit{
+    background-color: silver;
+}
+
+.CartButtonEdit:hover{
+    background-color: moccasin;
+}
+
+.buttonCart2Order{
+    background-color: forestgreen;
+}
+
+.buttonCart2Order:hover{
+    background-color: green;
+}
+
+.blockFloat .addToCartButton {
     display: block;
     position: absolute;
     bottom: 5px;
@@ -405,10 +439,9 @@ input.find {
     border-radius: 4px;
     padding: 10px 28px;
     font-size: large;
-
 }
 
-.addToCart:hover {
+.addToCartButton:hover {
     color: #553e34;
 }
 
@@ -460,7 +493,7 @@ input.find {
     background-color: #e6faf5;
 }
 
-.topSale li .addToCart a {
+.topSale li .addToCartButton a {
     position: absolute;
     height: 18px;
     bottom: 5px;
@@ -556,6 +589,7 @@ input.find {
 
 .submitButton {
     padding: 10px;
+    margin: 10px;
     background-color: #553e34;
     color: white;
 }

@@ -1,10 +1,10 @@
 <?php
-$item = GetProductItem(getId());
-$category_id = GetProductItem(getId())['parent_id'];
+$item = GetCartItem(getId());
+$product = GetProductItem($item['product_id']); // смотрим на этот товар из каталога
+
 ?>
 
-<h4><?= GetCatalogItem(GetCatalogItem($category_id)['parent_id'])['name'] ?> /
-    <?= GetCatalogItem($category_id)['name'] ?></h4>
+<h4>Редактирование товара в корзине</h4>
 
 <div class="goodsContainer">
 
@@ -12,11 +12,11 @@ $category_id = GetProductItem(getId())['parent_id'];
 
         <div class="name">
             <p>Наименование:</p>
-            <?= $item['name'] ?>
+            <?= $product['name'] ?>
         </div>
 
-        <?php if ($item['img_link']) {
-            echo "<img src = " . ImgUrl() . $item['img_link'] . ">";
+        <?php if ($product['img_link']) {
+            echo "<img src = " . ImgUrl() . $product['img_link'] . ">";
         } else {
             echo "<img alt = 'prepare' src = " . ImgUrl() . "no_img.png>";
         }?>
@@ -25,26 +25,27 @@ $category_id = GetProductItem(getId())['parent_id'];
 
             <div class="price">
                 <p>Цена:</p>
-                <b><?= $item['price'] ?> руб.</b>
+                <b><?= $product['price'] ?> руб.</b>
             </div>
 
             <div class="amount">
                 <p>Доступно:</p>
-                <b><?= $item['amount'] ?> шт.</b>
+                <b><?= $product['amount'] ?> шт.</b>
             </div>
 
 
             <div>
                 <form method="post"
-                      action="<?= $_SERVER['REQUEST_URI'] ?>&action=addGoods">
+                      action="<?= $_SERVER['PHP_SELF'] ?>?section=cart&action=update&id=<?= $item['id'] ?>">
 
                     <!--  проверить! кол-во  addToCart -->
 
                     <div class="amountItems">
                         <label for="amountItems">Количество</label>
-                        <input id="amountItems" type="number" name="amount" value="1">
+                        <input id="amountItems" type="number" name="amount"
+                               value="<?= $item['amount']?>">
                     </div>
-                    <button class="addToCartButton" type="submit">В корзину</button>
+                    <button class="addToCartButton" type="submit">Save</button>
                 </form>
             </div>
 

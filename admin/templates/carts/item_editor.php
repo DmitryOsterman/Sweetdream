@@ -8,7 +8,7 @@ if (getId()) {
 ?>
 
 <div class="page-header">
-    <h4>Редактирование товара в корзине N<?= $item['cart_id'] ?> </h4>
+    <h4>Редактирование товара в корзине N<?= $item['cart_id'] ?></h4>
 </div>
 <?php if (isset($errors) && $errors): ?>
     <div class="alert alert-danger" role="alert"><?= implode('<br/>', $errors) ?></div>
@@ -31,6 +31,7 @@ if (getId()) {
     <div class="form-group col-xs-2">
         <label for="price">Цена, руб</label>
         <input type="text" class="form-control" id="price" name="price"
+               disabled="disabled"
                placeholder="Цена товара"
                value="<?= $product['price'] ?>">
     </div>
