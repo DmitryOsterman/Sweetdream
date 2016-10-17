@@ -1,35 +1,44 @@
 <div class="centerBlock">
     <?php
-
     $action = getAction();
 
-    if ($action == 'exit') {
-        destroySession();
-        header('Location:' . $_SERVER['PHP_SELF']);
+    switch ($action) {
 
-    } elseif ($action == 'reg') {
-        require_once('./authorization/formUser.php');
+        case 'show':
+            showCommon('about');
+            break;
 
-    } elseif ($action == 'addUser') {
-        $errors = ValidateUserItem($_POST);
-        if ($errors) {
-            renderUser(['errors' => $errors]);
-        } else {
-            if (FindUserItem(['email' => $_POST['email']])) {
-                renderUser(['errors' => ['Такой человек уже есть']]);
+        case 'reg':
+            require_once('./authorization/formUser.php');
+            break;
+
+        case 'addUser':
+            $errors = ValidateUserItem($_POST);
+            if ($errors) {
+                renderUser(['errors' => $errors]);
             } else {
-                AddUserItem($_POST['first_name'], $_POST['second_name'],
-                    $_POST['address'], $_POST['zip_code'],
-                    $_POST['phone'], $_POST['email'],
-                    md5($_POST['password']));
-                renderUser(['message' => 'Изменения сохранены']);
-                locationDelay("?action=greetings", 2000);
+                if (FindUserItem(['email' => $_POST['email']])) {
+                    renderUser(['errors' => ['Такой человек уже есть']]);
+                } else {
+                    AddUserItem($_POST['first_name'], $_POST['second_name'],
+                        $_POST['address'], $_POST['zip_code'],
+                        $_POST['phone'], $_POST['email'],
+                        md5($_POST['password']));
+                    renderUser(['message' => 'Изменения сохранены']);
+                    locationDelay("?action=greetings", 2000);
+                }
             }
-        }
+            require_once('./authorization/formUser.php');
+            break;
 
-        require_once('./authorization/formUser.php');
-    } elseif (!($action == '')) {
-        showCommon($action);
+        case 'exit':
+            destroySession();
+            header('Location:' . $_SERVER['PHP_SELF']);
+            break;
+
+        default:
+            showCommon($action);
+            break;
     }
     ?>
 </div>

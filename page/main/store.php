@@ -1,91 +1,157 @@
-<?php
+<div class="centerBlock">
 
-// header('Location: ?action=show');
-// showStore();
+    <?php
 
-$action = getAction();
-switch ($action) {
-    case 'show':
-    case 'help':
-    case 'catalog':
-        break;
+    // header('Location: ?action=show');
 
-    case 'checkIn':
-        if (checkUser() === true) {
-            header('Location: ' . '?action=greetings');
-        } else {
-            warnings(checkUser());
-        }
-        break;
+    //ShowWarnings(startCart());
 
-    case 'addUser':
-        $errors = ValidateUserItem($_POST);
-        if ($errors) {
-            renderUser(['errors' => $errors]);
-        } else {
-            if (FindUserItem(['email' => $_POST['email']])) {
-                renderUser(['errors' => ['Такой человек уже есть']]);
+    $action = getAction();
+    switch ($action) {
+        case 'show':
+        case 'help':
+        case 'catalog':
+            showStore();
+            break;
+
+        case 'checkIn':
+
+            if (checkUser() === true) {
+
+
+                // Load Cart by user_id
+//            startCart();
+
+
+                header('Location: ' . '?action=greetings');
             } else {
-                AddUserItem($_POST['first_name'], $_POST['second_name'],
-                    $_POST['address'], $_POST['zip_code'],
-                    $_POST['phone'], $_POST['email'],
-                    md5($_POST['password']));
-                renderUser(['message' => 'Изменения сохранены']);
-                locationDelay("?action=show", 2000);
+                ShowWarnings(checkUser());
             }
-        }
-        require_once('./authorization/formUser.php');
-        break;
+            showStore();
+            break;
 
-    case 'editMode':
-        if (checkUser() === true) {
+        case 'addUser':
+            $errors = ValidateUserItem($_POST);
+            if ($errors) {
+                renderUser(['errors' => $errors]);
+            } else {
+                if (FindUserItem(['email' => $_POST['email']])) {
+                    renderUser(['errors' => ['Такой человек уже есть']]);
+                } else {
+                    AddUserItem($_POST['first_name'], $_POST['second_name'],
+                        $_POST['address'], $_POST['zip_code'],
+                        $_POST['phone'], $_POST['email'],
+                        md5($_POST['password']));
+                    renderUser(['message' => 'Изменения сохранены']);
+                    locationDelay("?action=show", 2000);
+                }
+            }
             require_once('./authorization/formUser.php');
-        } else {
-            warnings(checkUser());
+            break;
+
+        case 'editMode':
+            if (checkUser() === true) {
+                require_once('./authorization/formUser.php');
+            } else {
+                ShowWarnings(checkUser());
+                showStore();
 //            require_once('./models/main.php'); //                        ----????
-        }
-        break;
+            }
+            break;
 
-    case 'updateUser':
-        $errors = ValidateUserItem($_POST);
-        if ($errors) {
-            renderUser(['errors' => $errors]);
-        } else {
-            if ($_POST['password'] === GetUserItem(getId())['password']) {
-                // Password not changed!
+        case 'updateUser':
+            $errors = ValidateUserItem($_POST);
+            if ($errors) {
+                renderUser(['errors' => $errors]);
+                showStore();
+            } else {
+                if ($_POST['password'] === GetUserItem(getId())['password']) {
+                    // Password not changed!
 
-                EditUserItem(getId(), $_POST['first_name'], $_POST['second_name'],
-                    $_POST['address'], $_POST['zip_code'],
-                    $_POST['phone'], $_POST['email'],
-                    $_POST['password']);
+                    EditUserItem(getId(), $_POST['first_name'], $_POST['second_name'],
+                        $_POST['address'], $_POST['zip_code'],
+                        $_POST['phone'], $_POST['email'],
+                        $_POST['password']);
+
+                } else {
+                    // Password changed!
+
+                    EditUserItem(getId(), $_POST['first_name'], $_POST['second_name'],
+                        $_POST['address'], $_POST['zip_code'],
+                        $_POST['phone'], $_POST['email'],
+                        md5($_POST['password']));
+                };
+
+                renderUser(['message' => 'Изменения сохранены']);
+                locationDelay("?section=show", 2000);
+            }
+            require_once('./autorization/formUser.php');
+            break;
+
+
+        case 'addGoods':
+            $product_id = getId();
+            $cart_id = GetCartId();
+            $amount = '';
+            if (isset ($_POST['amount'])) {
+                $amount = $_POST['amount'];
+            };
+            $data = [];
+            $data['cart_id'] = $cart_id;
+            $data['product_id'] = $product_id;
+            $data['amount'] = $amount;
+
+            $errors = ValidateCartItem($data);
+            if (!ShowWarnings($errors)) {
+
+                AddUpdateCartItem($cart_id, $product_id, $amount);
+
+                $category_id = GetProductItem(getId())['parent_id'];
+                header('Location: ?section=store&category_id='
+                    . $category_id . '&id=' . $product_id);
+            }
+
+
+            showItemDetail();
+
+
+            break;
+
+        case 'addFast':
+            $product_id = getId();
+            $cart_id = GetCartId();
+            $amount = '1';
+
+            $data = [];
+            $data['cart_id'] = $cart_id;
+            $data['product_id'] = $product_id;
+            $data['amount'] = $amount;
+
+            $errors = ValidateCartItem($data);
+            if (!ShowWarnings($errors)) {
+                AddUpdateCartItem($cart_id, $product_id, $amount);
+
+                $category_id = GetProductItem($product_id)['parent_id'];
+                header('Location: ?section=store&category_id=' . $category_id);
 
             } else {
-                // Password changed!
+//            showCatalogDetail();
+            }
 
-                EditUserItem(getId(), $_POST['first_name'], $_POST['second_name'],
-                    $_POST['address'], $_POST['zip_code'],
-                    $_POST['phone'], $_POST['email'],
-                    md5($_POST['password']));
-            };
+//        header('Location: ?section=store&category_id=' . $category_id);
+            break;
 
-            renderUser(['message' => 'Изменения сохранены']);
-            locationDelay("?section=show", 2000);
-        }
-        require_once('./autorization/formUser.php');
-//        require_once('./page/main/common.php');
+        case 'exit':
+            destroySession();
+            header('Location:' . $_SERVER['REQUEST_URI']);
+            break;
 
-        break;
+        default:
+            echo "Это что такое?";
+            break;
+    }
 
-    case 'exit':
-        destroySession();
-        header('Location:' . $_SERVER['REQUEST_URI']);
-        break;
+    //showStore();
 
-//    default:
-//        echo "Это что такое?";
-//        break;
-}
-
-showStore();
-
-?>
+    ?>
+</div>

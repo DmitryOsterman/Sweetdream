@@ -14,6 +14,7 @@ else {
         'id' => '',
         'parent_id' => 0, // номер категории из каталога
         'name' => '',
+        'description' => '',
         'price' => '',
         'amount' => '',
         'img_link' => '',
@@ -37,8 +38,15 @@ else {
       enctype='multipart/form-data'>
     <div class="form-group">
         <label for="name">Название</label>
-        <input type="text" class="form-control" id="name" name="name" placeholder="Название товара"
+        <input type="text" class="form-control" id="name" name="name"
+               placeholder="Название товара"
                value="<?= $item['name'] ?>">
+    </div>
+    <div class="form-group">
+        <label for="description">Описание</label>
+        <input type="text" class="form-control" id="description"
+               name="description" placeholder="Описание товара"
+               value="<?= $item['description'] ?>">
     </div>
     <div class="form-group">
         <label for="category_id">Категория</label>
@@ -48,7 +56,8 @@ else {
     </div>
     <div class="form-group col-xs-6">
         <label for="price">Цена, руб</label>
-        <input type="text" class="form-control" id="price" name="price" placeholder="Цена товара"
+        <input type="text" class="form-control" id="price" name="price"
+               placeholder="Цена товара"
                value="<?= $item['price'] ?>">
     </div>
     <div class="form-group col-xs-6">
@@ -76,6 +85,6 @@ else {
     </div>
     <?php endif; ?>
     <input type="file" class="form-control" id="img" name="img">
-    </div>
+    <p></p>
     <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>

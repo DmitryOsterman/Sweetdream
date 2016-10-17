@@ -17,11 +17,12 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="<?= getSection() == 'menu'? 'active' : '' ?>"><a href="?section=menu">Меню</a></li>
-                <li class="<?= getSection() == 'catalog'? 'active' : '' ?>"><a href="?section=catalog">Каталог</a></li>
-                <li class="<?= getSection() == 'goods'? 'active' : '' ?>"><a href="?section=goods">Товары</a></li>
-                <li class="<?= getSection() == 'users'? 'active' : '' ?>"><a href="?section=users">Клиенты</a></li>
-                <li class="<?= getSection() == 'orders'? 'active' : '' ?>"><a href="?section=orders">Заказы</a></li>
+                <li class="<?= getSection() == 'menu' ? 'active' : '' ?>"><a href="?section=menu">Меню</a></li>
+                <li class="<?= getSection() == 'catalog' ? 'active' : '' ?>"><a href="?section=catalog">Каталог</a></li>
+                <li class="<?= getSection() == 'goods' ? 'active' : '' ?>"><a href="?section=goods">Товары</a></li>
+                <li class="<?= getSection() == 'users' ? 'active' : '' ?>"><a href="?section=users">Клиенты</a></li>
+                <li class="<?= getSection() == 'carts' ? 'active' : '' ?>"><a href="?section=carts">Корзины</a></li>
+                <li class="<?= getSection() == 'orders' ? 'active' : '' ?>"><a href="?section=orders">Заказы</a></li>
             </ul>
         </div>
     </div>

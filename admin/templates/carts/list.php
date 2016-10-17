@@ -1,15 +1,15 @@
 <?php
-if (!isset($order_id)) {
-    $orders = GetOrderList();
-    $item = current($orders);
-    $order_id = $item['id'];
+if (!isset($cart_id)) {
+    $carts = GetCartList();
+    $item = current($carts);
+    $cart_id = $item['id'];
 }
-$items = GetOrderItemsList($order_id);
+$items = GetCartItemsList($cart_id);
 $total = 0;
 ?>
 
     <div class="page-header">
-        <h4>Заказы</h4>
+        <h4>Корзины</h4>
     </div>
 <?php if (isset($errors) && $errors): ?>
     <div class="alert alert-danger" role="alert"><?= implode('<br/>', $errors) ?></div>
@@ -19,22 +19,22 @@ $total = 0;
 <?php endif; ?>
 
     <form class="container-fluid" role="form">
-        <select onchange="location.href='?section=orders&order_id='+this.value"
+        <select onchange="location.href='?section=carts&cart_id='+this.value"
                 class="form-control container-fluid"
                 size="4">
-            <?php print_order($order_id) ?>
+            <?php print_cart($cart_id) ?>
         </select>
     </form>
     <p></p>
     <button class="btn btn-primary"
-            onclick="location.href='?section=orders&action=new'">
+            onclick="location.href='?section=carts&action=new'">
         Добавить
     </button>
     <button class="btn btn-default"
-            onclick="location.href='?section=orders&action=edit&id=<?= $order_id ?>'">
+            onclick="location.href='?section=carts&action=edit&id=<?= $cart_id ?>'">
         Редактировать
     </button>
-    <a href="?section=orders&action=delete&id=<?= $order_id ?>"
+    <a href="?section=carts&action=delete&id=<?= $cart_id ?>"
        class="btn btn-danger"
        onclick="return confirm('Вы уверены?');">
         Удалить
@@ -44,7 +44,7 @@ if (count($items) > 0) :
     ?>
     <div class="col-xs-12">
         <table class="table table-striped">
-            <h4>Товары в заказе</h4>
+            <h4>Товары в корзине</h4>
             <tr>
                 <th>Id</th>
                 <th>Id товара</th>
@@ -75,19 +75,28 @@ if (count($items) > 0) :
                         <p>Осталось: <?= GetProductItem($item['product_id'])['amount'] ?> </p>
                     </td>
                     <td>
-                        <?= $item['price'] ?>
+                        <?= GetProductItem($item['product_id'])['price'] ?>
                     </td>
                 </tr>
                 <?php
-                $total += $item['amount'] * $item['price'];
+                $total += $item['amount'] * GetProductItem($item['product_id'])['price'];
             endforeach; ?>
         </table>
+
         <h4>Итого: <?= $total ?> руб.</h4>
+
+        <form method="post" action="?section=carts&action=ordering&id=<?= $cart_id ?>">
+            <button type="submit" class="btn btn-warning"
+                    onclick="return confirm('Вы уверены?');">
+                Заказать
+            </button>
+        </form>
+
     </div>
 <?php
 else :
-?>
-    <h4>Заказ не содержит товаров</h4>
+    ?>
+    <h4>Корзина не содержит товаров</h4>
 <?php
 endif
 ?>

@@ -1,56 +1,60 @@
 <?php
-
 $item = GetProductItem(getId());
-$category_id = getCategory_id();
-
-echo "<div class='centerBlock'>";
-echo "<h4>" . GetCatalogItem(GetCatalogItem($category_id)['parent_id'])['name'];
-echo " / " . GetCatalogItem($category_id)['name'] . "</h4>";
+$category_id = GetProductItem(getId())['parent_id'];
 ?>
-    <div class="goodsContainer">
 
-            <div class="itemDetail">
+<h4><?= GetCatalogItem(GetCatalogItem($category_id)['parent_id'])['name'] ?> /
+    <?= GetCatalogItem($category_id)['name'] ?></h4>
 
-                <div class="name">
-                    <p>Наименование:</p>
-                    <?= $item['name'] ?>
-                </div>
+<div class="goodsContainer">
 
-                <?php if ($item['img_link']) {
-                    echo "<img src = " . ImgUrl() . $item['img_link'] . ">";
-                } else {
-                    echo "<img alt = 'prepare' src = " . ImgUrl() . "no_img.png>";
-                }
-                ?>
+    <div class="itemDetail">
 
-                <div class="blockFloat">
+        <div class="name">
+            <p>Наименование:</p>
+            <?= $item['name'] ?>
+        </div>
 
-                    <div class="price">
-                        <p>Цена:</p>
-                        <b><?= $item['price'] ?> руб.</b>
-                    </div>
+        <?php if ($item['img_link']) {
+            echo "<img src = " . ImgUrl() . $item['img_link'] . ">";
+        } else {
+            echo "<img alt = 'prepare' src = " . ImgUrl() . "no_img.png>";
+        }?>
 
-                    <div class="amount">
-                        <p>Доступно:</p>
-                        <b><?= $item['amount'] ?> шт.</b>
-                    </div>
+        <div class="blockFloat">
 
-                    <div class="addToCart">
-                        <a href="<?= $_SERVER['REQUEST_URI']
-                        ?>&order=<?= $item['id'] ?>">
-                            В корзину
-                        </a>
-                    </div>
-                </div>
-
-                <div class="description">
-                    <p>Описание:</p>
-                    <p><?= $item['description'] ?></p>
-                </div>
-
+            <div class="price">
+                <p>Цена:</p>
+                <b><?= $item['price'] ?> руб.</b>
             </div>
-    </div>
 
-<?php
-echo "</div>";
-?>
+            <div class="amount">
+                <p>Доступно:</p>
+                <b><?= $item['amount'] ?> шт.</b>
+            </div>
+
+
+            <div>
+                <form method="post"
+                      action="<?= $_SERVER['REQUEST_URI'] ?>&action=addGoods">
+
+                    <!--  проверить! кол-во  addToCart -->
+
+                    <div class="amountItems">
+                        <label for="amountItems">Количество</label>
+                        <input id="amountItems" type="number" name="amount" value="1">
+                    </div>
+                    <button class="addToCart" type="submit">В корзину</button>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="description">
+            <p>Описание:</p>
+
+            <p><?= $item['description'] ?></p>
+        </div>
+
+    </div>
+</div>

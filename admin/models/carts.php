@@ -1,40 +1,67 @@
 <?php
 
-function AddOrder($user_id, $created, $status, $comment)
+function AddCart($user_id, $created, $comment)
 {
-    $sql = "INSERT INTO orders (user_id, created, status, comment) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO carts (user_id, created, comment) VALUES (?, ?, ?)";
     $sth = Db()->prepare($sql);
-    if (!$sth->execute([$user_id, $created, $status, $comment])) {
+    if (!$sth->execute([$user_id, $created, $comment])) {
         print_r($sth->errorInfo());
         die;
     }
     return Db()->lastInsertId();
 }
 
-function AddOrderItem($order_id, $product_id, $amount, $price)
+function UpdateCart($cart_id, $key, $val)
 {
-    $sql = "INSERT INTO order_items (order_id, product_id, amount, price) VALUES (?, ?, ?, ?)";
+    $sql = "UPDATE carts SET $key=? WHERE id=?";
     $sth = Db()->prepare($sql);
-    if (!$sth->execute([$order_id, $product_id, $amount, $price])) {
+    if (!$sth->execute([$val, $cart_id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+}
+
+function AddCartItem($cart_id, $product_id, $amount)
+{
+    $sql = "INSERT INTO cart_items (cart_id, product_id, amount) VALUES (?, ?, ?)";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$cart_id, $product_id, $amount])) {
         print_r($sth->errorInfo());
         die;
     }
     return Db()->lastInsertId();
 }
 
-function UpdateOrderItem($amount, $price, $id)
+function AddUpdateCartItem($cart_id, $product_id, $amount)
 {
-    $sql = "UPDATE order_items SET amount=?, price=? WHERE id=?";
+    $CartItems = GetCartItemsList($cart_id);
+    foreach ($CartItems as $CartItem) {
+        if ($CartItem['product_id'] == $product_id) {
+            $ExistCartItem = $CartItem;
+            break;
+        }
+    }
+    if (isset($ExistCartItem) && $ExistCartItem['product_id'] == $product_id) {
+        $amount += $ExistCartItem['amount'];
+        UpdateCartItem($amount, $ExistCartItem['id']);
+    } else {
+        AddCartItem($cart_id, $product_id, $amount);
+    }
+}
+
+function UpdateCartItem($amount, $id)
+{
+    $sql = "UPDATE cart_items SET amount=? WHERE id=?";
     $sth = Db()->prepare($sql);
-    if (!$sth->execute([$amount, $price, $id])) {
+    if (!$sth->execute([$amount, $id])) {
         print_r($sth->errorInfo());
         die;
     }
 }
 
-function DeleteOrderItem($id)
+function DeleteCartItem($id)
 {
-    $sql = "DELETE FROM order_items WHERE id=?";
+    $sql = "DELETE FROM cart_items WHERE id=?";
     $sth = Db()->prepare($sql);
     if (!$sth->execute([$id])) {
         print_r($sth->errorInfo());
@@ -42,9 +69,9 @@ function DeleteOrderItem($id)
     }
 }
 
-function DeleteOrder($id)
+function DeleteCart($id)
 {
-    $sql = "DELETE FROM orders WHERE id=?";
+    $sql = "DELETE FROM carts WHERE id=?";
     $sth = Db()->prepare($sql);
     if (!$sth->execute([$id])) {
         print_r($sth->errorInfo());
@@ -52,9 +79,9 @@ function DeleteOrder($id)
     }
 }
 
-function GetOrderItem($id)
+function GetCartItem($id)
 {
-    $sql = "SELECT * FROM order_items WHERE id=?";
+    $sql = "SELECT * FROM cart_items WHERE id=?";
     $sth = Db()->prepare($sql);
     if (!$sth->execute([$id])) {
         print_r($sth->errorInfo());
@@ -63,9 +90,20 @@ function GetOrderItem($id)
     return $sth->fetch();
 }
 
-function GetOrderList()
+function GetCart($id)
 {
-    $sql = "SELECT * FROM orders";
+    $sql = "SELECT * FROM carts WHERE id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return $sth->fetch();
+}
+
+function GetCartList()
+{
+    $sql = "SELECT * FROM carts";
     $sth = Db()->prepare($sql);
     if (!$sth->execute()) {
         print_r($sth->errorInfo());
@@ -74,20 +112,20 @@ function GetOrderList()
     return $sth->fetchAll();
 }
 
-function GetOrderItemsList($order_id = 0)
+function GetCartItemsList($cart_id = 0)
 {
-    $sql = "SELECT * FROM order_items WHERE order_id=?";
+    $sql = "SELECT * FROM cart_items WHERE cart_id=?";
     $sth = Db()->prepare($sql);
-    if (!$sth->execute([$order_id])) {
+    if (!$sth->execute([$cart_id])) {
         print_r($sth->errorInfo());
         die;
     }
     return $sth->fetchall();
 }
 
-function print_order($selected = 0)
+function print_cart($selected = 0)
 {
-    $items = GetOrderList();
+    $items = GetCartList();
     foreach ($items as $item) {
         $active = '';
         $user = GetUserItem($item['user_id']);
@@ -147,7 +185,7 @@ function GetUserItem($id)
     return $sth->fetch();
 }
 
-function ValidateOrder($data)
+function ValidateCart($data)
 {
     $errors = [];
     if (!$data['user_id']) {
@@ -159,20 +197,17 @@ function ValidateOrder($data)
     return $errors;
 }
 
-function ValidateOrderItem($data)
+function ValidateCartItem($data)
 {
     $errors = [];
-    if (!$data['order_id']) {
-        $errors[] = 'Необходимо выбрать заказ';
+    if (!$data['cart_id']) {
+        $errors[] = 'Необходимо выбрать корзину';
     }
     if (!$data['product_id']) {
         $errors[] = 'Необходимо выбрать продукт';
     }
     if (!$data['amount']) {
         $errors[] = 'Необходимо указать количество';
-    }
-    if (!$data['price']) {
-        $errors[] = 'Необходимо указать цену';
     }
     return $errors;
 }
@@ -227,3 +262,87 @@ function print_catalog($parent_id = 0, $selected = 0)
     }
 }
 
+function AddOrder($user_id, $created, $status, $comment)
+{
+    $sql = "INSERT INTO orders (user_id, created, status, comment) VALUES (?, ?, ?, ?)";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$user_id, $created, $status, $comment])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return Db()->lastInsertId();
+}
+
+function CartItems2OrderItems($cart_id)
+{
+    $sql = "INSERT INTO order_items (product_id, amount, order_id) SELECT product_id, amount, cart_id  FROM cart_items WHERE cart_id = ?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$cart_id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return Db()->lastInsertId();
+}
+
+function UpdateOrderItems($cart_id, $order_id)
+{
+    $sql = "UPDATE order_items SET order_id=? WHERE order_id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$order_id, $cart_id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+}
+
+function WriteOrderItemsPrice($order_id)
+{
+    $sql = "UPDATE order_items, goods SET order_items.price=goods.price WHERE order_items.product_id=goods.id AND order_items.order_id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$order_id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+}
+
+function UpdateGoodItemsAmount($order_id)
+{
+    $sql = "UPDATE goods, order_items SET goods.amount=goods.amount-order_items.amount WHERE goods.id=order_items.product_id AND order_items.order_id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$order_id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+}
+
+function DeleteCartItems($cart_id)
+{
+    $cart_items = GetCartItemsList($cart_id);
+    foreach ($cart_items as $cart_item) {
+        DeleteCartItem($cart_item['id']);
+    }
+}
+
+function CartToOrder($cart_id, $comment = 'no comment')
+{
+
+    $a = GetCart($cart_id);
+
+    $order_id = AddOrder($a['user_id'], $a['created'], 'ordering', $comment);
+
+//    UpdateCart($cart_id, 'order_id', $order_id);
+
+    CartItems2OrderItems($cart_id);
+
+    //в поле order_id значение было $cart_id, обновляем на $order_id:
+    UpdateOrderItems($cart_id, $order_id);
+
+    WriteOrderItemsPrice($order_id);
+
+    UpdateGoodItemsAmount($order_id);
+
+    DeleteCartItems($cart_id);
+
+    DeleteCart($cart_id);
+
+    return $order_id;
+}

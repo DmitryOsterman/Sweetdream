@@ -19,6 +19,7 @@ $items = GetUserList();
             <th>Телефон</th>
             <th>E mail</th>
             <th>Password</th>
+            <th>Управление</th>
         </tr>
         <?php foreach ($items as $item): ?>
             <tr>

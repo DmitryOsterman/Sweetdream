@@ -95,7 +95,7 @@ h4, h3, h2, h1 {
 .userMenu li {
     display: inline-block;
     margin-right: -5px;
-    width: 100px;
+    width: 110px;
     vertical-align: middle;
     position: relative;
 }
@@ -184,7 +184,19 @@ input.find {
     margin-top: 10px;
     position: relative;
     background-color: #e6faf5;
-    /*padding: 5px;*/
+}
+
+.centerWarningBlock {
+    float: right;
+    display: block;
+    width: 780px;
+    min-height: 30px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    position: relative;
+    background-color: yellow;
+    padding: 20px 0;
+    text-align: center;
 }
 
 /*====================================*/
@@ -256,21 +268,12 @@ input.find {
 }
 
 .mainCatalog > li:hover .subCatalog,
-.userMenu > li:hover .formLogin,
-.userMenu > li:hover .privateMenu
-{
+/*.userMenu > li:hover .formLogin,*/
+.userMenu > li:hover .privateMenu {
     display: block;
 }
 
 /*==============================================*/
-
-/*.goodsContainer {*/
-/*width: 780px;*/
-/*height: 680px;*/
-/*margin-top: 10px;*/
-/*overflow: hidden;*/
-/*position: relative;*/
-/*}*/
 
 .flowContainer {
     display: flex;
@@ -343,9 +346,10 @@ input.find {
     border-radius: 4px;
 }
 
-.itemDetail p{
+.itemDetail p {
     margin: 5px;
 }
+
 .itemDetail {
     max-height: 800px;
 }
@@ -360,7 +364,7 @@ input.find {
 .itemDetail img {
     display: inline-block;
     padding: 5px;
-    max-width: 650px;
+    max-width: 610px;
     height: 480px;
     margin: 10px 0;
     -webkit-box-shadow: 0 1px 9px 0 rgba(0, 0, 0, 0.25);
@@ -376,14 +380,14 @@ input.find {
     font-size: large;
 }
 
-.blockFloat p{
+.blockFloat p {
     padding: 0;
     margin: 5px;
 }
 
 .blockFloat .amount b,
-.blockFloat .price b{
-    padding: 8px 14px;
+.blockFloat .price b {
+    padding: 8px;
     display: block;
     text-align: center;
     border: 1px solid #E5E5E5;
@@ -399,30 +403,32 @@ input.find {
     border: 1px solid #E5E5E5;
     background-color: #63a726;
     border-radius: 4px;
-    text-align: center;
+    padding: 10px 28px;
+    font-size: large;
 
 }
-.blockFloat .addToCart a {
-    display: block;
-    padding: 8px 14px;
-    color: white;
-    text-decoration: none;
-}
 
-.addToCart a:hover {
+.addToCart:hover {
     color: #553e34;
 }
 
-.description p:first-child{
+.amountItems {
+    display: block;
+    position: absolute;
+    bottom: 75px;
+    height: 25px;
+    /*width: inherit;*/
+}
+
+.description p:first-child {
     font-size: large;
     color: #553e34;
 
 }
 
-.description p:last-child{
+.description p:last-child {
     color: #63a726;
 }
-
 
 /*==============================================*/
 
@@ -526,18 +532,6 @@ input.find {
 .formLogin input {
     height: 24px;
     margin: 5px;
-}
-
-#closeFormLogin {
-    display: block;
-    text-align: right;
-    text-decoration: none;
-}
-
-.warning {
-    background-color: yellow;
-    padding: 20px;
-    text-align: center;
 }
 
 .userForm {

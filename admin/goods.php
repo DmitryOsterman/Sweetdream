@@ -17,9 +17,8 @@ switch ($action) {
         $errors = ValidateProductItemForm($_POST);
         if ($errors) {
             render('goods', 'new', ['errors' => $errors]);
-        }
-        else {
-            $id = AddProductItem($_POST['name'], $_POST['category_id'], $_POST['price'], $_POST['amount']);
+        } else {
+            $id = AddProductItem($_POST['name'], $_POST['description'], $_POST['category_id'], $_POST['price'], $_POST['amount']);
             if ($_FILES && isset($_FILES['img']['size']) && $_FILES['img']['size']) {
                 $img = process_image($id, $error);
                 if ($error) {
@@ -37,9 +36,8 @@ switch ($action) {
         $errors = ValidateProductItemForm($_POST);
         if ($errors) {
             render('goods', 'edit', ['errors' => $errors]);
-        }
-        else {
-            EditProductItem(getId(), $_POST['name'], $_POST['category_id'], $_POST['price'], $_POST['amount']);
+        } else {
+            EditProductItem(getId(), $_POST['name'], $_POST['description'], $_POST['category_id'], $_POST['price'], $_POST['amount']);
             if ($_FILES && isset($_FILES['img']['size']) && $_FILES['img']['size']) {
                 $img = process_image(getId(), $error);
                 if ($error) {
@@ -72,7 +70,7 @@ function print_catalog($parent_id = 0, $selected = 0)
     $items = GetCatalogList($parent_id);
     foreach ($items as $item) {
         $active = '';
-        $level = $parent_id? '..... ' : '';
+        $level = $parent_id ? '..... ' : '';
         if ($item['id'] == $selected) {
             $active = 'selected="selected"';
         }
@@ -124,8 +122,8 @@ function process_image($productId, &$error = '')
             throw new RuntimeException('Invalid file format.');
         }
 
-        $file_name = sprintf('%s.%s', $productId.'-image', $ext);
-        if (!move_uploaded_file($_FILES['img']['tmp_name'], ImgPath().$file_name)) {
+        $file_name = sprintf('%s.%s', $productId . '-image', $ext);
+        if (!move_uploaded_file($_FILES['img']['tmp_name'], ImgPath() . $file_name)) {
             throw new RuntimeException('Failed to move uploaded file.');
         }
 
@@ -137,82 +135,3 @@ function process_image($productId, &$error = '')
         return false;
     }
 }
-
-/*
-function resize_image($img, &$error = '')
-{
-    $toWidth = 350;
-    $toHeight = 350;
-
-    $info = getimagesize($img);
-    $width = $info[0];
-    $height = $info[1];
-    switch ($info[2]) {
-        case 1:
-            if (!($image = imagecreatefromgif($img))) {
-                $error = 'Invalid image gif format';
-                return false;
-            }
-            break;
-        case 2:
-            if ($image = imagecreatefromjpeg($img)) {
-                $error = 'Invalid image jpeg format';
-                return false;
-            }
-            break;
-        case 3:
-            if (!($image = imagecreatefrompng($img))) {
-                $error = 'Invalid image png format';
-                return false;
-            }
-            break;
-        default:
-            $error = 'Not supported image format';
-            return false;
-    }
-
-    $newHeight = $toHeight;
-    $newWidth = round($newHeight / $height * $width);
-
-    if ($newWidth > $toWidth) {
-        $newWidth = $toWidth;
-        $newHeight = round($newWidth / $width * $height);
-    }
-
-    $newImage = imagecreatetruecolor($newWidth, $newHeight);
-
-    switch ($this->format) {
-        case 1: // gif
-            $color = imagecolorallocate(
-                $newImage,
-                $this->transparencyColor[0],
-                $this->transparencyColor[1],
-                $this->transparencyColor[2]
-            );
-
-            imagecolortransparent($newImage, $color);
-            imagetruecolortopalette($newImage, false, 256);
-            break;
-        case 3: // png
-            imagealphablending($newImage, false);
-
-            $color = imagecolorallocatealpha(
-                $newImage,
-                $this->transparencyColor[0],
-                $this->transparencyColor[1],
-                $this->transparencyColor[2],
-                0
-            );
-
-            imagefill($newImage, 0, 0, $color);
-            imagesavealpha($newImage, true);
-            break;
-    }
-
-    imagecopyresampled($newImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
-
-    imagedestroy($image);
-
-    return true;
-}
-*/

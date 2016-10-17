@@ -23,7 +23,7 @@ $items = GetProductList($category_id);
     <table class="table table-striped">
         <tr>
             <th>Id</th>
-            <th>Название</th>
+            <th>Название / описание</th>
             <th>Цена, руб</th>
             <th>Остаток</th>
             <th>Картинка</th>
@@ -35,7 +35,8 @@ $items = GetProductList($category_id);
                     <?= $item['id'] ?>
                 </td>
                 <td>
-                    <?= $item['name'] ?>
+                    <?= $item['name'] ?><br>
+                    <?= $item['description'] ?>
                 </td>
                 <td>
                     <?= $item['price'] ?>

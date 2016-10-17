@@ -20,8 +20,6 @@ if ($_POST) {
 }
 ?>
 
-<div class='centerBlock'>
-
     <?php if (getId()): ?>
         <h4>Редактирование персональных данных</h4>
     <?php else: ?>
@@ -84,7 +82,5 @@ if ($_POST) {
             </div>
             <button type="submit" class="submitButton">Сохранить</button>
 
-
         </form>
     </div>
-</div>

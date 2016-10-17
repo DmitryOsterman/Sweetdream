@@ -1,20 +1,20 @@
 <?php
-function AddProductItem($name, $category_id, $price, $amount)
+function AddProductItem($name, $description, $category_id, $price, $amount)
 {
-    $sql = "INSERT INTO goods (name, parent_id, price, amount) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO goods (name, description, parent_id, price, amount) VALUES (?, ?, ?, ?, ?)";
     $sth = Db()->prepare($sql);
-    if (!$sth->execute([$name, $category_id, $price, $amount])) {
+    if (!$sth->execute([$name, $description, $category_id, $price, $amount])) {
         print_r($sth->errorInfo());
         die;
     }
     return Db()->lastInsertId();
 }
 
-function EditProductItem($id, $name, $category_id, $price, $amount)
+function EditProductItem($id, $name, $description, $category_id, $price, $amount)
 {
-    $sql = "UPDATE goods SET name=?, parent_id=?, price=?, amount=?  WHERE id=?";
+    $sql = "UPDATE goods SET name=?, description=?, parent_id=?, price=?, amount=?  WHERE id=?";
     $sth = Db()->prepare($sql);
-    if (!$sth->execute([$name, $category_id, $price, $amount, $id])) {
+    if (!$sth->execute([$name, $description, $category_id, $price, $amount, $id])) {
         print_r($sth->errorInfo());
         die;
     }
@@ -57,8 +57,10 @@ function FindProductItem($params = [])
     $keys = array_keys($params);
     $values = array_values($params);
 
-    $where = array_map(function($a){return $a.'=?';}, $keys);
-    $sql = "SELECT * FROM goods WHERE ".implode(' AND ', $where);
+    $where = array_map(function ($a) {
+        return $a . '=?';
+    }, $keys);
+    $sql = "SELECT * FROM goods WHERE " . implode(' AND ', $where);
     $sth = Db()->prepare($sql);
     if (!$sth->execute($values)) {
         print_r($sth->errorInfo());
@@ -95,7 +97,7 @@ function AddImageToProductItem($id, $img)
 function DeleteImageFromProductItem($id)
 {
     $item = GetProductItem($id);
-    @unlink(ImgPath().$item['img_link']);
+    @unlink(ImgPath() . $item['img_link']);
 
     $sql = "UPDATE goods SET img_link=? WHERE id=?";
     $sth = Db()->prepare($sql);

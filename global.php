@@ -58,7 +58,7 @@ function GetProductList($category_id)
     return $sth->fetchAll();
 }
 
-function getUpmenu()
+function GetUpMenu()
 {
     $sql = "SELECT * FROM `upmenu` WHERE 1";
     $sth = Db()->prepare($sql);
@@ -77,7 +77,7 @@ function ImgUrl()
 
 function printUpmenu()
 {
-    $items = getUpmenu();
+    $items = GetUpMenu();
     echo "<ul class='upMenu'>";
     foreach ($items as $item) {
         $link = '?section=common&action=' . $item['link'];
@@ -94,17 +94,19 @@ function printMenuCatalog()
     echo "<ul class='mainCatalog'>";
     foreach ($items as $item) {
         $children = GetCatalogList($item['id']);
-        echo "<li><a href='#'> $item[name] </a>";
+        ?>
+        <li><a href='#'
+               onclick="location.href='?section=store&category_id=<?= $item['id'] ?>'">
+                <?= $item['name'] ?></a>
+        <?php
+
         if (!$children) continue;
         echo "<ul class='subCatalog'>";
-
         foreach ($children as $child) {
             ?>
-            <li>
-                <a href='#'
+            <li><a href='#'
                    onclick="location.href='?section=store&category_id=<?= $child['id'] ?>'">
-                    <?= $child['name'] ?></a>
-            </li>
+                    <?= $child['name'] ?></a></li>
         <?php
         }
 
@@ -164,7 +166,7 @@ function showCatalogDetail()
             <div class='price'><?= $item['price'] ?> руб.</div>
 
             <div class='addToCart'>
-                <a href="<?= $_SERVER['REQUEST_URI'] ?>&order=<?= $item['id'] ?>">
+                <a href="<?= $_SERVER['REQUEST_URI'] ?>&action=addFast&id=<?= $item['id'] ?>">
                     В корзину
                 </a>
             </div>
@@ -177,31 +179,27 @@ function showCatalogDetail()
 
 function showItemDetail()
 {
+
     if (GetProductItem(getId())) {
         $file = './page/main/store/itemDetail.php';
         if (file_exists($file)) {
             require_once($file);
-        } else echo("HOLD");
+        } else {
+            echo("HOLD");
+        }
         return true;
     } else return false;
+
 }
 
 function showStore()
 {
-    echo "<div class='centerBlock'>";
     if (!getId() == '') {
         showItemDetail();
     } else if (!getCategory_id() == '') {
         showCatalogDetail();
     } else showCommon('help');
-    echo "<div>";
 }
-
-
-// if (!getCategory_id() == '') {
-//        showCatalogDetail();
-//    } else showCommon('help');
-
 
 function greetings()
 {
@@ -222,24 +220,38 @@ function startSession()
 function destroySession()
 {
     if (session_id()) {
+        DestroyCart();
         session_unset();
         setcookie(session_name(), session_id(), time() - 60 * 60 * 24);
         session_destroy();
     }
 }
 
+function DestroyCart()
+{
+    $cart_id = GetUserCart($_SESSION['sess_id'])['id'];
+    if (CountCartItems($cart_id) == 0) {
+        DeleteCart($cart_id);
+    }
+}
+
 function startCart()
 {
-    if (isset($_GET['order'])) {
-        $new_product = trim(strip_tags($_GET['new_product']));
-        if (isset($_SESSION['product'])) {
-            array_unshift($_SESSION['product'], $new_product);
+    if (isset($_SESSION['sess_login'])) {
+        // find & use the user cart
+        $cart_id = GetUserCart($_SESSION['sess_id'])['id'];
+        if ($cart_id == '') {
+            // create new cart
+            $today = date("Y-m-d H:i:s", time()); // (формат MySQL DATETIME)
+            $cart_id = AddCart($_SESSION['sess_id'], $today, 'victory!');
+            return $cart_id;
         } else {
-            $_SESSION['product'] = array($new_product);
+            // the exists cart is ready to use
+            return $cart_id;
         }
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
-//        header('Location: ' . $_SERVER['PATH']);
-        ob_end_flush();
+    } else {
+        // create temp. cart and use them
+        return false;
     }
 }
 
@@ -305,22 +317,19 @@ function loginButton()
 
 function cartButton()
 {
-    if (isset($_SESSION['product'])) {
 
-//        foreach ($_SESSION['product'] as $key => $value) {
-//            //Берем из БД товары, по их ID
-//        }
+    if (isset($_SESSION['sess_id'])) {
+        if (startCart()) {
+            $cart_id = startCart();
+            echo "<a href='#'><img src = "
+                . ImgUrl() . "basket.png style='width: 14px'>Корзина (<b>"
+                . CountCartItems($cart_id) . "</b>)</a>";
 
+        } else echo "<a href='#'><img src = "
+            . ImgUrl() . "basket.png style='width: 14px'>Корзина</a>";
 
-        if (count($_SESSION['product']) <= 0) {
-            echo "<a href='#'>Корзина</a>";
-        } else {
-            echo "<a href='#'>Корзина (<b>" . count($_SESSION['product']) . "</b>)</a>";
-        }
-    } else {
-        echo "<a href='#'>Корзина</a>";
-    }
-
+    } else echo "<a href='#'><img src = "
+        . ImgUrl() . "basket.png style='width: 14px'>Корзина</a>";
 }
 
 function helpButton()
@@ -332,9 +341,10 @@ function helpButton()
 
 
 // -----------  ----------------
+
 function getAction()
 {
-    return isset($_GET['action']) ? $_GET['action'] : 'about';
+    return isset($_GET['action']) ? $_GET['action'] : 'show';
 }
 
 function getSection()
@@ -358,16 +368,145 @@ function locationDelay($loc, $del)
     echo '<script type="text/javascript">setTimeout(function(){window.top.location="' . $loc . '"} ,' . $del . ');</script>';
 }
 
-function warnings($warn)
+function ShowWarnings($warn)
 {
     if (isset($warn) && $warn) {
         ?>
-        <div class="centerBlock">
-            <div class="warning"><?= implode('<br/>', $warn) ?>
-            </div>
+        <div class="centerWarningBlock">
+            <?= implode('<br/>', $warn) ?>
         </div>
         <?php
         return true;
     }
     return false;
+}
+
+// -------------- cart ----------------------------
+function AddCart($user_id, $created, $comment = '')
+{
+    $sql = "INSERT INTO carts (user_id, created, comment) VALUES (?, ?, ?)";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$user_id, $created, $comment])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return Db()->lastInsertId();
+}
+
+function CountCartItems($cart_id)
+{
+    if (count(GetCartItemsList($cart_id))) {
+        return count(GetCartItemsList($cart_id));
+    }
+
+    return 0;
+}
+
+function DeleteCart($id)
+{
+    $sql = "DELETE FROM carts WHERE id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+}
+
+function GetCartItemsList($cart_id)
+{
+    $sql = "SELECT * FROM cart_items WHERE cart_id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$cart_id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return $sth->fetchall();
+}
+
+function GetCart($id)
+{
+    $sql = "SELECT * FROM carts WHERE id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return $sth->fetch();
+}
+
+function GetUserCart($user_id)
+{
+    $sql = "SELECT * FROM carts WHERE user_id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$user_id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return $sth->fetch();
+}
+
+
+function ValidateCartItem($data)
+{
+    $errors = [];
+    if (!$data['cart_id']) {
+        $errors[] = 'Необходимо войти или зарегистрироваться';
+    }
+    if (!$data['product_id']) {
+        $errors[] = 'Необходимо выбрать продукт';
+    }
+    if (!$data['amount']) {
+        $errors[] = 'Необходимо указать количество';
+    }
+    return $errors;
+}
+
+
+function GetCartId()
+{
+    if (isset($_SESSION['sess_id'])) {
+        $cart_id = GetUserCart($_SESSION['sess_id'])['id'];
+        return $cart_id;
+    }
+    return false;
+}
+
+
+function AddCartItem($cart_id, $product_id, $amount)
+{
+    $sql = "INSERT INTO cart_items (cart_id, product_id, amount) VALUES (?, ?, ?)";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$cart_id, $product_id, $amount])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return Db()->lastInsertId();
+}
+
+
+function UpdateCartItem($amount, $id)
+{
+    $sql = "UPDATE cart_items SET amount=? WHERE id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$amount, $id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+}
+
+function AddUpdateCartItem($cart_id, $product_id, $amount)
+{
+    $CartItems = GetCartItemsList($cart_id);
+    foreach ($CartItems as $CartItem) {
+        if ($CartItem['product_id'] == $product_id) {
+            $ExistCartItem = $CartItem;
+            break;
+        }
+    }
+    if (isset($ExistCartItem) && $ExistCartItem['product_id'] == $product_id) {
+        $amount += $ExistCartItem['amount'];
+        UpdateCartItem($amount, $ExistCartItem['id']);
+    } else {
+        AddCartItem($cart_id, $product_id, $amount);
+    }
 }
