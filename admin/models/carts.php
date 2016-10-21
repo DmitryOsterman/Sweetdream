@@ -43,13 +43,13 @@ function AddUpdateCartItem($cart_id, $product_id, $amount)
     }
     if (isset($ExistCartItem) && $ExistCartItem['product_id'] == $product_id) {
         $amount += $ExistCartItem['amount'];
-        UpdateCartItem($amount, $ExistCartItem['id']);
+        UpdateCartItem_amount($amount, $ExistCartItem['id']);
     } else {
         AddCartItem($cart_id, $product_id, $amount);
     }
 }
 
-function UpdateCartItem($amount, $id)
+function UpdateCartItem_amount($amount, $id)
 {
     $sql = "UPDATE cart_items SET amount=? WHERE id=?";
     $sth = Db()->prepare($sql);
@@ -329,7 +329,6 @@ function CartToOrder($cart_id, $comment = 'no comment')
 
     $order_id = AddOrder($a['user_id'], $a['created'], 'ordering', $comment);
 
-//    UpdateCart($cart_id, 'order_id', $order_id);
 
     CartItems2OrderItems($cart_id);
 

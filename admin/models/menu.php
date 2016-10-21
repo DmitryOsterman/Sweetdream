@@ -70,7 +70,7 @@ function FindMenuItem ($params=[])
 function ValidateMenuItemForm($data)
 {
     $errors = [];
-    if (!$data['name']) // if empty
+    if (!$data['name'])
     {
         $errors[] = 'Необходимо ввести название меню';
     }

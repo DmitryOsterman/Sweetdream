@@ -7,19 +7,32 @@
             ShowCart();
             break;
 
+        case 'addAlert':
+            $item = GetProductItem(getId());
+            $message = [];
+            $message[] = 'Вы успешно добавили "' . $item['name'] . '" в корзину.';
+            $btnOk = true;
+            ShowCart(['message' => $message, 'btnOk' => $btnOk]);
+            break;
+
         case 'edit':
-            EditItemCart();
+            EditCartItem();
             break;
 
         case 'update':
-            $amount = $_POST['amount'];
-            UpdateCartItem($amount, getId());
-            header('Location:' . $_SERVER['PHP_SELF'].'?section=cart&action=show');
+            $errors = ValidateCartItem($_POST);
+            if (!isset ($_POST['amount'])) {
+                EditCartItem(['errors' => 'Необходимо указать количество']);
+            } else {
+                UpdateCartItem_amount($_POST['amount'], getId());
+                EditCartItem(['message' => 'Изменения сохранены']);
+            }
             break;
 
         case 'delete':
             DeleteCartItem(getId());
-            header('Location:' . $_SERVER['PHP_SELF'].'?section=cart&action=show');
+            $message[] = 'Товар удален';
+            ShowCart(['message' => $message]);
             break;
 
         default:

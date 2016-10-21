@@ -78,12 +78,12 @@ function ImgUrl()
 function printUpmenu()
 {
     $items = GetUpMenu();
-    echo "<ul class='upMenu'>";
+    echo "<div class='upMenu'><ul>";
     foreach ($items as $item) {
         $link = '?section=common&action=' . $item['link'];
         echo "<li><a href=" . $link . "> $item[name] </a></li>";
     }
-    echo "</ul>";
+    echo "</ul></div>";
 }
 
 function printMenuCatalog()
@@ -140,22 +140,77 @@ function showCommon($actionFile)
     } else echo("HOLD");
 }
 
-function showCatalogDetail()
+function showCatalogDetail($params = [])
 {
     $category_id = getCategory_id();
     $items = GetProductList($category_id);
-    $child = GetCatalogItem($category_id);
-    $parent = GetCatalogItem($child['parent_id']);
+    $catalog = GetCatalogItem($category_id);
+    if ($category_id) {
 
-    $s = "<h4>";
-    if ($parent) {
-        $s .= $parent['name'] . " / ";
+        foreach ($params as $key => $value) {
+            $$key = $value;
+        }
+        ?>
+
+        <?php if (isset($errors) && $errors): ?>
+            <div class="centerWarningBlock"><?= implode('<br/>', $errors) ?></div>
+        <?php endif; ?>
+        <?php if (isset($message) && $message): ?>
+            <div class="centerSuccessBlock"><?= $message ?></div>
+        <?php endif; ?>
+
+        <H4 class="CatalogItem">
+            <a href="<?= $_SERVER['PHP_SELF'] ?>?section=store&action=show">Каталог</a>
+        </H4>
+        <span class="separator">»</span>
+        <?php
+        if ($catalog['parent_id'] == 0) {
+            // $catalog - верхний уров.
+            ?>
+            <H4 class="CatalogItem CatalogItemActive">
+                <a href="#">
+                    <?= $catalog['name'] ?></a>
+            </H4>
+            <span class="separator">»</span>
+            <?php
+            $children = GetCatalogList($category_id);
+            foreach ($children as $child) {
+                ?>
+                <H4 class="CatalogItem">
+                    <a href="<?= $_SERVER['PHP_SELF'] ?>?section=store&category_id=<?= $child['id'] ?>">
+                        <?= $child['name'] ?>
+                    </a></H4>
+            <?php
+            }
+        } else {
+            // $catalog - нижний уров.
+            $masterCatalog = GetCatalogItem($catalog['parent_id']);
+            $child = $catalog;
+            ?>
+            <H4 class="CatalogItem">
+                <a href="<?= $_SERVER['PHP_SELF'] ?>?section=store&category_id=<?= $masterCatalog['id'] ?>">
+                    <?= $masterCatalog['name'] ?></a></H4>
+            <span class="separator">»</span>
+            <H4 class="CatalogItem CatalogItemActive">
+                <a href="#">
+                    <?= $child['name'] ?>
+                </a></H4>
+        <?php
+        }
+
+        if ($items) {
+            showGoodsList($items);
+        };
+
+        return true;
     }
-    $s .= $child['name'] . "</h4>";
-    echo($s);
-    ?>
-    <div class="flowContainer">
-    <?php
+    echo('category_id is absence');
+    return false;
+}
+
+function showGoodsList($items)
+{
+    echo "<div class='flowContainer'>";
     foreach ($items as $item) {
         ?>
         <div class='menuItem'>
@@ -165,14 +220,16 @@ function showCatalogDetail()
                 echo "<img alt = 'prepare' src = " . ImgUrl() . "no_img.png>";
             }
             ?>
-            <a href="<?= $_SERVER['REQUEST_URI'] ?>&id=<?= $item['id'] ?>">
+            <a href="<?= $_SERVER['PHP_SELF'] ?>?section=store&id=<?= $item['id'] ?>">
                 <div class='name'> <?= $item['name'] ?></div>
             </a>
 
             <div class='price'><?= $item['price'] ?> руб.</div>
 
             <div class='addToCartButton'>
-                <a href="<?= $_SERVER['REQUEST_URI'] ?>&action=addFast&id=<?= $item['id'] ?>">
+                <a href="<?= $_SERVER['PHP_SELF'] ?>?section=store&&category_id=<?=
+                $item['parent_id'] ?>&action=addFast&id=<?= $item['id'] ?>"
+                   onclick="return confirm('Вы уверены?');">
                     В корзину
                 </a>
             </div>
@@ -180,15 +237,81 @@ function showCatalogDetail()
     <?php
     }
     echo "</div>";
-    return true;
 }
 
-function showItemDetail()
+function showGoodsShortList($items)
+{
+    echo "<div class='flowContainer'>";
+    foreach ($items as $item) {
+        ?>
+        <div class='menuItem'>
+            <?php if ($item['img_link']) {
+                echo "<img src = " . ImgUrl() . $item['img_link'] . ">";
+            } else {
+                echo "<img alt = 'prepare' src = " . ImgUrl() . "no_img.png>";
+            }
+            ?>
+            <a href="<?= $_SERVER['PHP_SELF'] ?>?section=store&id=<?= $item['id'] ?>">
+                <div class='name'> <?= $item['name'] ?></div>
+            </a>
+
+            <div class='price'><?= $item['price'] ?> руб.</div>
+
+        </div>
+    <?php
+    }
+    echo "</div>";
+}
+
+function showGoodsTable($items)
+{
+    ?>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th><h4>Название</h4></th>
+            <th><h4>Количество</h4></th>
+            <th><h4>Цена, руб</h4></th>
+        </tr>
+        <?php foreach ($items as $item): ?>
+            <tr>
+                <td>
+                    <?php if ($item['img_link']): ?>
+                        <img width="70" src="<?= ImgUrl() . $item['img_link'] ?>">
+                    <?php else: ?>
+                        <img width="70" src="<?= ImgUrl() . 'no_img.png' ?>">
+
+                    <?php endif; ?>
+                </td>
+                <td class="description_column">
+                    <a href="<?= $_SERVER['PHP_SELF'] ?>?section=store&category_id=<?=
+                    $item['parent_id'] ?>&id=<?= $item['id'] ?>">
+                        <?= $item['name'] ?>
+                    </a>
+                </td>
+                <td class="amount">
+                    <?= $item['amount'] ?>
+                </td>
+                <td class="price">
+                    <?= $item['price'] ?>
+                </td>
+            </tr>
+        <?php
+        endforeach; ?>
+    </table>
+
+<?php
+}
+
+function showItemDetail($params = [])
 {
 
     if (GetProductItem(getId())) {
         $file = './page/main/store/itemDetail.php';
         if (file_exists($file)) {
+            foreach ($params as $key => $value) {
+                $$key = $value;
+            }
             require_once($file);
         } else {
             echo("HOLD");
@@ -233,41 +356,9 @@ function destroySession()
     }
 }
 
-function DestroyCart()
-{
-    $cart_id = GetUserCart($_SESSION['sess_id'])['id'];
-    if (CountCartItems($cart_id) == 0) {
-        DeleteCart($cart_id);
-    }
-}
-
-function startCart()
-{
-    if (isset($_SESSION['sess_login'])) {
-        // find & use the user cart
-        $cart_id = GetUserCart($_SESSION['sess_id'])['id'];
-        if ($cart_id == '') {
-            // create new cart
-            $today = date("Y-m-d H:i:s", time()); // (формат MySQL DATETIME)
-            $cart_id = AddCart($_SESSION['sess_id'], $today, 'victory!');
-            return $cart_id;
-        } else {
-            // the exists cart is ready to use
-            return $cart_id;
-        }
-    } else {
-        // create temp. cart and use them
-        return false;
-    }
-}
-
 function checkUser()
 {
     $errors = [];
-//    $user = FindUserItem(['email' => $_POST['login']]);
-//        echo '<pre>';
-//        print_r($user);
-//        echo '</pre>';
 
     if (isset($_POST['login']) && isset($_POST['password'])) {
 
@@ -306,12 +397,6 @@ function checkUser()
 
 
 // ----------- menu buttons ----------------
-
-function adminButton()
-{
-    echo "<a href='./admin'>Админ</a>";
-}
-
 function loginButton()
 {
     if (isset($_SESSION['sess_login'])) {
@@ -323,15 +408,9 @@ function loginButton()
 
 function cartButton()
 {
-    $cart = "<a href='" . $_SERVER['PHP_SELF'] . "?section=cart&action=show'>";
-    $cart .= "<img src = '" . ImgUrl() . "basket.png' style='width: 14px'>Корзина";
-
-    if (isset($_SESSION['sess_id'])) {
-        if (startCart()) {
-            $cart_id = startCart();
-            $cart .= "(<b>" . CountCartItems($cart_id) . "</b>)";
-        }
-    }
+    $cart = '<a href=' . $_SERVER['PHP_SELF'] . '?section=cart&action=show>';
+    $cart .= '<img src = ' . ImgUrl() . 'basket.png style=width:14px>Корзина';
+    $cart .= "(<b id=cartAmount>" . CountCartItems(GetCartId()) . "</b>)";
     $cart .= "</a>";
     echo($cart);
 }
@@ -366,7 +445,6 @@ function getCategory_id()
     return isset($_GET['category_id']) ? $_GET['category_id'] : '';
 }
 
-
 function locationDelay($loc, $del)
 {
     echo '<script type="text/javascript">setTimeout(function(){window.top.location="' . $loc . '"} ,' . $del . ');</script>';
@@ -386,6 +464,15 @@ function ShowWarnings($warn)
 }
 
 // -------------- cart ----------------------------
+
+function DestroyCart()
+{
+    $cart_id = GetUserCart($_SESSION['sess_id'])['id'];
+    if (CountCartItems($cart_id) == 0) {
+        DeleteCart($cart_id);
+    }
+}
+
 function AddCart($user_id, $created, $comment = '')
 {
     $sql = "INSERT INTO carts (user_id, created, comment) VALUES (?, ?, ?)";
@@ -488,10 +575,24 @@ function ValidateCartItem($data)
 function GetCartId()
 {
     if (isset($_SESSION['sess_id'])) {
-        $cart_id = GetUserCart($_SESSION['sess_id'])['id'];
-        return $cart_id;
+        if (GetUserCart($_SESSION['sess_id'])['id']) {
+            return GetUserCart($_SESSION['sess_id'])['id'];
+        } else {
+            date_default_timezone_set('Europe/Moscow');
+            $today = date("Y-m-d H:i:s", time()); // (формат MySQL DATETIME)
+            return AddCart($_SESSION['sess_id'], $today, 'User Cart Created success');
+        }
+
+    } else {
+        if (!isset($_SESSION['cart_id'])) {
+            // create temp cart
+            date_default_timezone_set('Europe/Moscow');
+            $today = date("Y-m-d H:i:s", time()); // (формат MySQL DATETIME)
+            $_SESSION['cart_id'] = AddCart(0, $today, 'AutoCreated');
+        } else {
+        }
+        return $_SESSION['cart_id'];
     }
-    return false;
 }
 
 function AddCartItem($cart_id, $product_id, $amount)
@@ -505,7 +606,7 @@ function AddCartItem($cart_id, $product_id, $amount)
     return Db()->lastInsertId();
 }
 
-function UpdateCartItem($amount, $id)
+function UpdateCartItem_amount($amount, $id)
 {
     $sql = "UPDATE cart_items SET amount=? WHERE id=?";
     $sth = Db()->prepare($sql);
@@ -515,86 +616,45 @@ function UpdateCartItem($amount, $id)
     }
 }
 
+function UpdateCartItem_cartId($new_cart_id, $id)
+{
+    $sql = "UPDATE cart_items SET cart_id=? WHERE id=?";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$new_cart_id, $id])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+}
+
 function AddUpdateCartItem($cart_id, $product_id, $amount)
 {
     $CartItems = GetCartItemsList($cart_id);
+    $ExistCartItem = [];
+    // ищем $product_id продукт в корзине покупателя
     foreach ($CartItems as $CartItem) {
         if ($CartItem['product_id'] == $product_id) {
+            // нащли
             $ExistCartItem = $CartItem;
+//            $Exist = true;
             break;
         }
     }
-    if (isset($ExistCartItem) && $ExistCartItem['product_id'] == $product_id) {
+    if ($ExistCartItem['product_id'] == $product_id) {
         $amount += $ExistCartItem['amount'];
-        UpdateCartItem($amount, $ExistCartItem['id']);
+        UpdateCartItem_amount($amount, $ExistCartItem['id']);
     } else {
         AddCartItem($cart_id, $product_id, $amount);
     }
 }
 
-function ShowCart()
+function EditCartItem($params = [])
 {
-    if (GetCartId()) {
-        $cart_id = GetCartId();
-        $items = GetCartItemsList($cart_id);
-        $total = 0;
-
-        echo "<H2>Содержимое корзины</H2>";
-        echo "<div class='flowContainer'>";
-        foreach ($items as $item) {
-            $product = GetProductItem($item['product_id']); // смотрим на этот товар из каталога
-
-            ?>
-            <div class='menuItem'>
-                <?php if ($product['img_link']) {
-                    echo "<img src = " . ImgUrl() . $product['img_link'] . ">";
-                } else {
-                    echo "<img alt = 'prepare' src = " . ImgUrl() . "no_img.png>";
-                }
-                ?>
-
-                <a href="<?= $_SERVER['PHP_SELF'] ?>?section=store&id=<?= $product['id'] ?>">
-                    <?= $product['name'] ?>
-                </a>
-
-                <div class=''>В корзине: <?= $item['amount'] ?> шт.</div>
-                <div class=''>По цене: <?= $product['price'] ?> руб.</div>
-                <br>
-
-                <div>
-                    <a class='CartButtonEdit'
-                       href="<?= $_SERVER['PHP_SELF'] ?>?section=cart&action=edit&id=<?= $item['id'] ?>">
-                        Edit
-                    </a>
-                    <a class='CartButtonDelete'
-                       href="<?= $_SERVER['PHP_SELF'] ?>?section=cart&action=delete&id=<?= $item['id'] ?>"
-                       onclick="return confirm('Вы уверены?');">
-                        Delete
-                    </a>
-                </div>
-
-            </div>
-            <?php
-            $total += $item['amount'] * GetProductItem($item['product_id'])['price'];
-        }
-        echo "</div>";
-        ?>
-        <h4>Итого: <?= $total ?> руб.</h4>
-        <button type="submit" class="buttonCart2Order"
-                onclick="return confirm('Вы уверены?');">
-            Оформить заказ
-        </button>
-
-    <?php
-    }
-}
-
-function EditItemCart()
-{
-
     if (GetCartItem(getId())) {
         $file = './page/main/cart/itemDetail.php';
         if (file_exists($file)) {
+            foreach ($params as $key => $value) {
+                $$key = $value;
+            }
             require_once($file);
         } else {
             echo("HOLD");
@@ -603,3 +663,87 @@ function EditItemCart()
     } else return false;
 }
 
+function UpdateUserCart()
+{
+
+//  обработаем временн. корз. если она есть
+    if (isset($_SESSION['cart_id'])) {
+        $items_temp = GetCartItemsList($_SESSION['cart_id']);
+
+        if (count($items_temp) > 0) {
+
+            // если товары были добавлены анонимно
+            // перенесем их в корз. пользователя
+
+            $user_cart_id = GetUserCart($_SESSION['sess_id'])['id'];
+
+            if (!$user_cart_id) {
+                $user_cart_id = GetCartId();
+            }
+
+            // Проблем с корзиной пользователя - НЕТ, continuation
+
+            $items_user = GetCartItemsList($user_cart_id);
+
+            if (count($items_user) == 0) {
+
+                // просто перенесем из врем. корзины в пустую пользователя
+
+                foreach ($items_temp as $item_temp) {
+                    UpdateCartItem_cartId($user_cart_id, $item_temp['id']);
+                }
+
+            } else {
+
+                // перенесем из врем. корзины в корз. пользователя,
+                // с обновлением существ. товаров
+
+                foreach ($items_temp as $item_temp) {
+                    foreach ($items_user as $item_user) {
+                        if ($item_temp['product_id'] == $item_user['product_id']) {
+                            $amount = $item_temp['amount'] + $item_user['amount'];
+                            UpdateCartItem_amount($amount, $item_user['id']);
+                            DeleteCartItem($item_temp['id']);
+                        } else {
+                            UpdateCartItem_cartId($user_cart_id, $item_temp['id']);
+                        }
+                    }
+                }
+
+            }
+
+        } else {
+            // врем. корзина - пустая
+            return true;
+        }
+
+    }
+    return true;
+}
+
+function ShowCart($params = [])
+{
+    $file = './page/main/cart/showCart.php';
+    if (file_exists($file)) {
+        foreach ($params as $key => $value) {
+            $$key = $value;
+        }
+        require_once($file);
+    } else {
+        echo("HOLD");
+    }
+}
+
+// ------------  search --------------------
+
+function GetSearchGoodsList($str)
+{
+    $str = '%' . $str . '%';
+    $sql = "SELECT * FROM goods WHERE (`name` LIKE ?)OR (`description` LIKE ?)";
+    $sth = Db()->prepare($sql);
+    if (!$sth->execute([$str, $str])) {
+        print_r($sth->errorInfo());
+        die;
+    }
+    return $sth->fetchAll();
+}

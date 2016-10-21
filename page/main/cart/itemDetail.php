@@ -1,11 +1,21 @@
 <?php
-$item = GetCartItem(getId());
-$product = GetProductItem($item['product_id']); // смотрим на этот товар из каталога
-
+if (getId()) {
+    $item = GetCartItem(getId());
+    $product = GetProductItem($item['product_id']); // смотрим на этот товар из каталога
+} else {
+    $errors[] = 'Отсутствует id товара';
+    return $errors;
+};
 ?>
 
-<h4>Редактирование товара в корзине</h4>
+<?php if (isset($errors) && $errors): ?>
+    <div class="centerWarningBlock"><?= implode('<br/>', $errors) ?></div>
+<?php endif; ?>
+<?php if (isset($message) && $message): ?>
+    <div class="centerSuccessBlock"><?= $message ?></div>
+<?php endif; ?>
 
+<h4>Редактирование товара в корзине</h4>
 <div class="goodsContainer">
 
     <div class="itemDetail">
@@ -38,14 +48,13 @@ $product = GetProductItem($item['product_id']); // смотрим на этот 
                 <form method="post"
                       action="<?= $_SERVER['PHP_SELF'] ?>?section=cart&action=update&id=<?= $item['id'] ?>">
 
-                    <!--  проверить! кол-во  addToCart -->
-
                     <div class="amountItems">
                         <label for="amountItems">Количество</label>
                         <input id="amountItems" type="number" name="amount"
-                               value="<?= $item['amount']?>">
+                               min="0" max="<?= $product['amount'] ?>"
+                               value="<?= $item['amount'] ?>">
                     </div>
-                    <button class="addToCartButton" type="submit">Save</button>
+                    <button class="addToCartButton" type="submit">Сохранить</button>
                 </form>
             </div>
 
@@ -53,7 +62,6 @@ $product = GetProductItem($item['product_id']); // смотрим на этот 
 
         <div class="description">
             <p>Описание:</p>
-
             <p><?= $item['description'] ?></p>
         </div>
 

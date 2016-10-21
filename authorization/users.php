@@ -61,20 +61,8 @@ function ValidateUserItem($data)
     if (!$data['first_name']) {
         $errors[] = 'Необходимо ввести Имя';
     }
-//    if (!$data['second_name']) {
-//        $errors[] = 'Необходимо ввести Фамилию';
-//    }
-//    if (!$data['address']) {
-//        $errors[] = 'Необходимо ввести Адрес';
-//    }
-//    if (!$data['zip_code']) {
-//        $errors[] = 'Необходимо ввести почтовый индекс';
-//    }
-//    if (!$data['phone']) {
-//        $errors[] = 'Необходимо ввести номер телефона';
-//    }
     if (!$data['email']) {
-        $errors[] = 'Необходимо ввести Email';
+        $errors[] = 'Необходимо ввести E-mail';
     }
     if (!$data['password']) {
         $errors[] = 'Необходимо ввести пароль';
@@ -99,7 +87,7 @@ function FindUserItem($params = [])
     return $sth->fetchAll();
 }
 
-function renderUser($params = [])
+function renderParams($params = [])
 {
     foreach ($params as $key => $value) {
         $$key = $value;
@@ -115,7 +103,7 @@ function printPrivateMenu()
                 href="?section=store&action=editMode<?=
                 '&id='
                 . $_SESSION['sess_id'] ?>" id='siteLogin'>Профиль</a></li>
-        <li><a href='?action=exit'>Выход</a></li>
+        <li><a href='?action=exit' onclick="return confirm('Уже уходите?')">Выход</a></li>
     </ul>
 <?php
 }
@@ -134,11 +122,12 @@ function printPublicMenu()
             <label>Введите пароль</label>
             <input type="password" id="f_password" name="password" placeholder="Password"/>
 
-            <input type="submit" value="Вход">
-            <input type="reset" value="Сброс"/>
+            <button class="submitButton" type="submit">Вход</button>
+            <button class="submitButton" type="reset">Сброс</button>
+
         </form>
 
-        <div class="madUser">
+        <div class="">
             <small><a href="?action=reg">Зарегистрироваться</a><br>
                 <a href="?&action=forgetPass">Забыли пароль?</a></small>
         </div>

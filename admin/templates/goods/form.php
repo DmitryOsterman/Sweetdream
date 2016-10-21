@@ -34,8 +34,8 @@ else {
 <?php if (isset($message) && $message): ?>
     <div class="alert alert-success" role="alert"><?= $message ?></div>
 <?php endif; ?>
-<form method="post" action="?section=goods&action=<?= $item['id']? 'update' : 'add' ?>&id=<?= $item['id'] ?>"
-      enctype='multipart/form-data'>
+<form method="post" action="?section=goods&action=<?= $item['id']? 'update' :
+    'add' ?>&id=<?= $item['id'] ?>" enctype='multipart/form-data'>
     <div class="form-group">
         <label for="name">Название</label>
         <input type="text" class="form-control" id="name" name="name"

@@ -1,7 +1,8 @@
 <?php
 if (getId()) {
     $item = GetCartItem(getId());
-    $product = GetProductItem($item['product_id']); // смотрим на этот товар из каталога
+    // смотрим на этот товар из каталога
+    $product = GetProductItem($item['product_id']);
 } else {
     $errors[] = 'Отсутствует id товара';
 };
@@ -18,8 +19,8 @@ if (getId()) {
 <?php endif; ?>
 
 <form method="post" action="?section=cart_items&action=update&id=<?= $item['id'] ?>">
-    <input type="hidden" name="cart_id" value="<?=$item['cart_id']?>">
-    <input type="hidden" name="product_id" value="<?=$item['product_id']?>">
+    <input type="hidden" name="cart_id" value="<?= $item['cart_id'] ?>">
+    <input type="hidden" name="product_id" value="<?= $item['product_id'] ?>">
 
     <!--      enctype='multipart/form-data'-->
     <div class="form-group col-xs-4">
@@ -40,20 +41,22 @@ if (getId()) {
         <input type="number" class="form-control" id="amount" name="amount"
                placeholder="Количество"
                value="<?= $item['amount'] ?>">
+
         <p>На складе = <?= $product['amount'] ?> шт. </p>
     </div>
     <div class="form-group">
         <label for="img">Картинка</label>
         <?php if ($product['img_link']): ?>
-        <div class="row">
-            <div class="col-sm-6 col-md-4">
-                <div class="thumbnail">
-                    <img class="img-thumbnail" width="250"
-                         src="<?= ImgUrl() . $product['img_link'] ?>">
+            <div class="row">
+                <div class="col-sm-6 col-md-4">
+                    <div class="thumbnail">
+                        <img class="img-thumbnail" width="250"
+                             src="<?= ImgUrl() . $product['img_link'] ?>">
+                    </div>
                 </div>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
-    <?php endif; ?>
+
     <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>

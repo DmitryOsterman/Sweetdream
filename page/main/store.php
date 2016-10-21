@@ -10,29 +10,28 @@
             break;
 
         case 'checkIn':
-
             if (checkUser() === true) {
-
+                UpdateUserCart();
                 header('Location: ' . '?action=greetings');
             } else {
                 ShowWarnings(checkUser());
+                showStore();
             }
-            showStore();
             break;
 
         case 'addUser':
             $errors = ValidateUserItem($_POST);
             if ($errors) {
-                renderUser(['errors' => $errors]);
+                renderParams(['errors' => $errors]);
             } else {
                 if (FindUserItem(['email' => $_POST['email']])) {
-                    renderUser(['errors' => ['Такой человек уже есть']]);
+                    renderParams(['errors' => ['Такой человек уже есть']]);
                 } else {
                     AddUserItem($_POST['first_name'], $_POST['second_name'],
                         $_POST['address'], $_POST['zip_code'],
                         $_POST['phone'], $_POST['email'],
                         md5($_POST['password']));
-                    renderUser(['message' => 'Изменения сохранены']);
+                    renderParams(['message' => 'Изменения сохранены']);
                     locationDelay("?action=show", 2000);
                 }
             }
@@ -51,7 +50,7 @@
         case 'updateUser':
             $errors = ValidateUserItem($_POST);
             if ($errors) {
-                renderUser(['errors' => $errors]);
+                renderParams(['errors' => $errors]);
                 showStore();
             } else {
                 if ($_POST['password'] === GetUserItem(getId())['password']) {
@@ -71,7 +70,7 @@
                         md5($_POST['password']));
                 };
 
-                renderUser(['message' => 'Изменения сохранены']);
+                renderParams(['message' => 'Изменения сохранены']);
                 locationDelay("?section=show", 2000);
             }
             require_once('./autorization/formUser.php');
@@ -91,15 +90,12 @@
             $data['amount'] = $amount;
 
             $errors = ValidateCartItem($data);
-            if (!ShowWarnings($errors)) {
-
+            if (!$errors) {
                 AddUpdateCartItem($cart_id, $product_id, $amount);
-
-                $category_id = GetProductItem(getId())['parent_id'];
-                header('Location: ?section=store&category_id='
-                    . $category_id . '&id=' . $product_id);
+                showItemDetail(['message' => 'Товар добавлен в корзину']);
+            } else {
+                showItemDetail($errors);
             }
-            showItemDetail();
             break;
 
         case 'addFast':
@@ -113,26 +109,26 @@
             $data['amount'] = $amount;
 
             $errors = ValidateCartItem($data);
-            if (!ShowWarnings($errors)) {
+            if (!$errors) {
                 AddUpdateCartItem($cart_id, $product_id, $amount);
-
-                $category_id = GetProductItem($product_id)['parent_id'];
-                header('Location: ?section=store&category_id=' . $category_id);
-
+                header('Location: ?section=cart&action=addAlert&id='
+                    . GetProductItem($product_id)['id']);
             } else {
-//            showCatalogDetail();
+                showCatalogDetail($errors);
             }
-
             break;
 
         case 'search':
-            echo 'Searching... ' . $_POST['Search_text'].'. ';
-            echo('В разработке');
+            $foundList = GetSearchGoodsList($_POST['Search_text']);
+            if ($foundList) {
+                echo '<H4>Мы нашли следующие товары, соответствующие вашему запросу:</H4>';
+                showGoodsTable($foundList);
+            } else echo('<H4>Ничего не нашлось</H4>');
             break;
 
         case 'exit':
             destroySession();
-            header('Location:' . $_SERVER['REQUEST_URI']);
+            header('Location:' . $_SERVER['PHP_SELF']);
             break;
 
         default:

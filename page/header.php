@@ -22,7 +22,7 @@
 </head>
 <body>
 <div class="siteContainer">
-    <div class="headerContainer">
+    <div class="header">
         <div class="sawLine"></div>
 
         <div class="titleSite">
@@ -31,7 +31,6 @@
         </div>
 
         <ul class="userMenu">
-            <li><?php adminButton() ?></li>
             <li><?php loginButton() ?></li>
             <li><?php helpButton() ?></li>
             <li><?php cartButton() ?></li>
@@ -45,7 +44,7 @@
             </form>
         </div>
 
+        <?php printUpmenu(); ?>
     </div>
 
-    <?php printUpmenu(); ?>
-<div class="store">
+    <div class="store">

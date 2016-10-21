@@ -7,17 +7,13 @@ switch ($action) {
         render('catalog', 'list');
         break;
     case 'new':
-        // вызов формы update/add
         render('catalog', 'new');
         break;
     case 'edit':
-        // вызов формы update/add
         render('catalog', 'edit');
         break;
 
     case 'add':
-        // форма передала:
-        // method="post" action="?section=catalog&action='add'...
         $errors = ValidateCatalogItemForm($_POST); //проверка - не пусто
         if ($errors) {
             render('catalog', 'new', ['errors' => $errors]);
@@ -33,8 +29,6 @@ switch ($action) {
         break;
 
     case 'update':
-        // method="post" action="?section=catalog&action='update'...
-        // вызов формы update/add
         $errors = ValidateCatalogItemForm($_POST); //проверка - не пусто
         if ($errors) {
             render('catalog', 'edit', ['errors' => $errors]);

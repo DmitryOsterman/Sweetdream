@@ -15,16 +15,16 @@
         case 'addUser':
             $errors = ValidateUserItem($_POST);
             if ($errors) {
-                renderUser(['errors' => $errors]);
+                renderParams(['errors' => $errors]);
             } else {
                 if (FindUserItem(['email' => $_POST['email']])) {
-                    renderUser(['errors' => ['Такой человек уже есть']]);
+                    renderParams(['errors' => ['Такой человек уже есть']]);
                 } else {
                     AddUserItem($_POST['first_name'], $_POST['second_name'],
                         $_POST['address'], $_POST['zip_code'],
                         $_POST['phone'], $_POST['email'],
                         md5($_POST['password']));
-                    renderUser(['message' => 'Изменения сохранены']);
+                    renderParams(['message' => 'Изменения сохранены']);
                     locationDelay("?action=greetings", 2000);
                 }
             }

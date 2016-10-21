@@ -3,7 +3,6 @@ include_once('./global.php');
 include_once('./authorization/users.php');
 
 startSession();
-startCart();
 ob_start();
 
 require_once('./page/header.php');

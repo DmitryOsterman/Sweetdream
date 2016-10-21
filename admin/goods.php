@@ -104,10 +104,6 @@ function process_image($productId, &$error = '')
                 throw new RuntimeException('Unknown errors.');
         }
 
-        //if ($_FILES['img']['size'] > 1000000) {
-        //    throw new RuntimeException('Exceeded filesize limit.');
-        //}
-
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         if (false === $ext = array_search(
                 $finfo->file($_FILES['img']['tmp_name']),
@@ -126,8 +122,6 @@ function process_image($productId, &$error = '')
         if (!move_uploaded_file($_FILES['img']['tmp_name'], ImgPath() . $file_name)) {
             throw new RuntimeException('Failed to move uploaded file.');
         }
-
-        //resize_image(ImgPath().$file_name, $error);
 
         return $file_name;
     } catch (RuntimeException $e) {

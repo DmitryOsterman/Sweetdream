@@ -111,7 +111,6 @@ $total = 0;
 
     <table class="table table-striped">
         <tr>
-            <!--            <th>Id</th>-->
             <th>Название</th>
             <th>Цена,р./ед</th>
             <th>Остаток</th>
@@ -120,9 +119,7 @@ $total = 0;
         </tr>
         <?php foreach ($products as $product): ?>
             <tr>
-                <!--                <td>-->
-                <!--                    --><? //= $product['id'] ?>
-                <!--                </td>-->
+
                 <td>
                     <?= $product['name'] ?>
                 </td>
