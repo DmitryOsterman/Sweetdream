@@ -23,7 +23,7 @@ switch ($action) {
             } else {
                 AddCatalogItem($_POST['name'], $_POST['path'], $_POST['parent_id']);
                 render('catalog', 'new', ['message' => 'Изменения сохранены']);
-                locationDelay("?section=catalog", 2000);
+                LocationDelay("?section=catalog", 2000);
             }
         }
         break;
@@ -35,7 +35,7 @@ switch ($action) {
         } else {
             UpdateCatalogItem(getId(), $_POST['name'], $_POST['path'], $_POST['parent_id']);
             render('catalog', 'edit', ['message' => 'Изменения сохранены']);
-            locationDelay("?section=catalog", 20000);
+            LocationDelay("?section=catalog", 20000);
         }
         break;
 

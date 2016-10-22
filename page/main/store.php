@@ -12,30 +12,15 @@
         case 'checkIn':
             if (checkUser() === true) {
                 UpdateUserCart();
-                header('Location: ' . '?action=greetings');
+                header('Location: '
+                    . $_SERVER['PHP_SELF'] . '?action=greetings');
             } else {
                 ShowWarnings(checkUser());
-                showStore();
             }
             break;
 
         case 'addUser':
-            $errors = ValidateUserItem($_POST);
-            if ($errors) {
-                renderParams(['errors' => $errors]);
-            } else {
-                if (FindUserItem(['email' => $_POST['email']])) {
-                    renderParams(['errors' => ['Такой человек уже есть']]);
-                } else {
-                    AddUserItem($_POST['first_name'], $_POST['second_name'],
-                        $_POST['address'], $_POST['zip_code'],
-                        $_POST['phone'], $_POST['email'],
-                        md5($_POST['password']));
-                    renderParams(['message' => 'Изменения сохранены']);
-                    locationDelay("?action=show", 2000);
-                }
-            }
-            require_once('./authorization/formUser.php');
+            renderAddUserForm();
             break;
 
         case 'editMode':
@@ -43,37 +28,11 @@
                 require_once('./authorization/formUser.php');
             } else {
                 ShowWarnings(checkUser());
-                showStore();
             }
             break;
 
         case 'updateUser':
-            $errors = ValidateUserItem($_POST);
-            if ($errors) {
-                renderParams(['errors' => $errors]);
-                showStore();
-            } else {
-                if ($_POST['password'] === GetUserItem(getId())['password']) {
-                    // Password not changed!
-
-                    EditUserItem(getId(), $_POST['first_name'], $_POST['second_name'],
-                        $_POST['address'], $_POST['zip_code'],
-                        $_POST['phone'], $_POST['email'],
-                        $_POST['password']);
-
-                } else {
-                    // Password changed!
-
-                    EditUserItem(getId(), $_POST['first_name'], $_POST['second_name'],
-                        $_POST['address'], $_POST['zip_code'],
-                        $_POST['phone'], $_POST['email'],
-                        md5($_POST['password']));
-                };
-
-                renderParams(['message' => 'Изменения сохранены']);
-                locationDelay("?section=show", 2000);
-            }
-            require_once('./autorization/formUser.php');
+            renderUpdateUserForm();
             break;
 
 
@@ -111,7 +70,8 @@
             $errors = ValidateCartItem($data);
             if (!$errors) {
                 AddUpdateCartItem($cart_id, $product_id, $amount);
-                header('Location: ?section=cart&action=addAlert&id='
+                header('Location: ' . $_SERVER['PHP_SELF']
+                    . '?section=cart&action=addAlert&id='
                     . GetProductItem($product_id)['id']);
             } else {
                 showCatalogDetail($errors);

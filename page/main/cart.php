@@ -10,7 +10,7 @@
         case 'addAlert':
             $item = GetProductItem(getId());
             $message = [];
-            $message[] = 'Вы успешно добавили "' . $item['name'] . '" в корзину.';
+            $message[] = 'Вы успешно добавили "' . $item['name'] . '" в корзину';
             $btnOk = true;
             ShowCart(['message' => $message, 'btnOk' => $btnOk]);
             break;

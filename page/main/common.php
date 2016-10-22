@@ -5,31 +5,17 @@
     switch ($action) {
 
         case 'show':
-            showCommon('about');
+            showCommonFile('about');
             break;
 
         case 'reg':
             require_once('./authorization/formUser.php');
             break;
 
-        case 'addUser':
-            $errors = ValidateUserItem($_POST);
-            if ($errors) {
-                renderParams(['errors' => $errors]);
-            } else {
-                if (FindUserItem(['email' => $_POST['email']])) {
-                    renderParams(['errors' => ['Такой человек уже есть']]);
-                } else {
-                    AddUserItem($_POST['first_name'], $_POST['second_name'],
-                        $_POST['address'], $_POST['zip_code'],
-                        $_POST['phone'], $_POST['email'],
-                        md5($_POST['password']));
-                    renderParams(['message' => 'Изменения сохранены']);
-                    locationDelay("?action=greetings", 2000);
-                }
-            }
-            require_once('./authorization/formUser.php');
-            break;
+//        case 'addUser':
+//            renderUserForm();
+//            require_once('./authorization/formUser.php');
+//            break;
 
         case 'exit':
             destroySession();
@@ -37,7 +23,8 @@
             break;
 
         default:
-            showCommon($action);
+            // about, articles, contacts, dealers, delivery, greetings, help
+            showCommonFile($action);
             break;
     }
     ?>

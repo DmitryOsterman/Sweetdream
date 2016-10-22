@@ -27,7 +27,7 @@ switch ($action) {
                     $_POST['phone'], $_POST['email'],
                     md5($_POST['password']));
                 render('users', 'new', ['message' => 'Изменения сохранены']);
-                locationDelay("?section=users", 2000);
+                LocationDelay("?section=users", 2000);
             }
         }
         break;
@@ -54,7 +54,7 @@ switch ($action) {
                     md5($_POST['password']));
             };
             render('users', 'edit', ['message' => 'Изменения сохранены']);
-            locationDelay("?section=users", 9000);
+            LocationDelay("?section=users", 9000);
         }
         break;
     case 'delete':

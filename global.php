@@ -132,7 +132,7 @@ function showReviews()
 <?php
 }
 
-function showCommon($actionFile)
+function showCommonFile($actionFile)
 {
     $file = './page/main/common/' . $actionFile . '.php';
     if (file_exists($file)) {
@@ -239,30 +239,6 @@ function showGoodsList($items)
     echo "</div>";
 }
 
-function showGoodsShortList($items)
-{
-    echo "<div class='flowContainer'>";
-    foreach ($items as $item) {
-        ?>
-        <div class='menuItem'>
-            <?php if ($item['img_link']) {
-                echo "<img src = " . ImgUrl() . $item['img_link'] . ">";
-            } else {
-                echo "<img alt = 'prepare' src = " . ImgUrl() . "no_img.png>";
-            }
-            ?>
-            <a href="<?= $_SERVER['PHP_SELF'] ?>?section=store&id=<?= $item['id'] ?>">
-                <div class='name'> <?= $item['name'] ?></div>
-            </a>
-
-            <div class='price'><?= $item['price'] ?> руб.</div>
-
-        </div>
-    <?php
-    }
-    echo "</div>";
-}
-
 function showGoodsTable($items)
 {
     ?>
@@ -318,7 +294,6 @@ function showItemDetail($params = [])
         }
         return true;
     } else return false;
-
 }
 
 function showStore()
@@ -327,16 +302,16 @@ function showStore()
         showItemDetail();
     } else if (!getCategory_id() == '') {
         showCatalogDetail();
-    } else showCommon('help');
+    } else showCommonFile('help');
 }
 
-function greetings()
-{
-    $file = './templates/greetings.php';
-    if (file_exists($file)) {
-        require_once($file);
-    } else echo("Missing greetings file");
-}
+//function greetings()
+//{
+//    $file = './templates/greetings.php';
+//    if (file_exists($file)) {
+//        require_once($file);
+//    } else echo("Missing greetings file");
+//}
 
 
 // ----------- sessions ----------------
@@ -422,7 +397,6 @@ function helpButton()
 <?php
 }
 
-
 // -----------  ----------------
 
 function getAction()
@@ -445,7 +419,7 @@ function getCategory_id()
     return isset($_GET['category_id']) ? $_GET['category_id'] : '';
 }
 
-function locationDelay($loc, $del)
+function LocationDelay($loc, $del)
 {
     echo '<script type="text/javascript">setTimeout(function(){window.top.location="' . $loc . '"} ,' . $del . ');</script>';
 }

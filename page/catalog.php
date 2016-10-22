@@ -1,4 +1,6 @@
-    <div class="leftBlock">
-        <?php printMenuCatalog(); ?>
-        <?php showReviews(); ?>
-    </div>
+<div class="leftBlock">
+    <?php
+    printMenuCatalog();
+    showReviews();
+    ?>
+</div>
