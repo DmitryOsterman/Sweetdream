@@ -202,7 +202,7 @@ INSERT INTO `goods` (`id`, `parent_id`, `name`, `description`, `price`, `amount`
 CREATE TABLE IF NOT EXISTS `orders` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created` datetime NOT NULL,
   `status` char(250) NOT NULL,
   `comment` char(250) NOT NULL,
   `total` double DEFAULT NULL

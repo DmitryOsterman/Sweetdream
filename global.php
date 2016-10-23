@@ -2,7 +2,7 @@
 
 function Db()
 {
-    require_once('./config/db.init');
+    require_once('./config/db.init.php');
     global $dbh;
     try {
         if (!$dbh) {

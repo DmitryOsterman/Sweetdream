@@ -159,7 +159,8 @@ function renderAddUserForm()
 
             showUserDetail(['message' => 'Вы успешно зарегистрированы. Вам на почту направлено письмо с приветом))']);
 
-            ConfirmEmail($_POST['email']);
+            $from = 'support@sweetdream.mixtline.com';
+            Send_mail_by_GMAIL($from, $_POST['email']);
 
             LocationDelay($_SERVER['PHP_SELF'] . '?action=greetings', 5000);
         }
@@ -190,18 +191,29 @@ function renderUpdateUserForm()
     }
 }
 
-function ConfirmEmail($user_mail)
+function Send_mail_by_GMAIL($email_from, $email_to)
 {
-    $msg = " Добрый   день !<br><br>\n";
-    $msg .= " Вы успешно зарегистрированы в нашем магазинчике. <br><br>\n";
-    $msg .= "Спасибо что пользуетесь нашими услугами.<br><br>\n";
-    $msg .= "<a href=\"http://sweetdream.mixtline.com/\">Сладкий сон</a><br>\n";
-    $msg .= "support@sweetdream.mixtline.com";
-    $Ot = " Суппорт ";
-    $Ot = "=?windows-1251?B?" . base64_encode($Ot) . "?=";
-    $header = "Content-Type: text/html; charset=windows-1251\r\n";
-    $header .= "From: " . $Ot . " <support@sweetdream.mixtline.com>";
-    $subject = " Сообщение магазинчика 'Сладкий сон'";
-    $subject = "=?windows-1251?B?" . base64_encode($subject) . "?=";
-    mail($user_mail, $subject, $msg, $header);
+
+    require_once 'swift/lib/swift_required.php';
+
+    $transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, "ssl")
+        ->setUsername('goods.sweetdream@gmail.com')
+        ->setPassword('G7vB9bHE');
+//      GMAIL_USERNAME
+//      GMAIL_PASSWORD
+
+    $mailer = Swift_Mailer::newInstance($transport);
+
+    $msg = " Добрый день !\n";
+    $msg .= "Вы успешно зарегистрированы в нашем магазинчике Сладкий сон.\n";
+    $msg .= "Спасибо что пользуетесь нашими услугами.\n";
+    $msg .= "Наш адрес: http://sweetdream.mixtline.com/\n";
+
+    $message = Swift_Message::newInstance('Успешная регистрация')
+        ->setFrom(array($email_from => 'Сладкий сон'))
+        ->setTo(array($email_to))
+        ->setBody($msg);
+
+    $result = $mailer->send($message);
+    return $result;
 }
