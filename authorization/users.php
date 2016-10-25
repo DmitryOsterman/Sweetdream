@@ -197,8 +197,8 @@ function Send_mail_by_GMAIL($email_from, $email_to)
     require_once 'swift/lib/swift_required.php';
 
     $transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, "ssl")
-        ->setUsername('goods.sweetdream@gmail.com')
-        ->setPassword('G7vB9bHE');
+        ->setUsername('')
+        ->setPassword('');
 //      GMAIL_USERNAME
 //      GMAIL_PASSWORD
 
