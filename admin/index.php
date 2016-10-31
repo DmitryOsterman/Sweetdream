@@ -1,6 +1,8 @@
 <?php
 require_once('./global.php');
 
+if (!httpAuthentication()) exit;
+
 $section = isset($_GET['section']) ? $_GET['section'] : 'menu';
 switch ($section) {
     case 'menu':

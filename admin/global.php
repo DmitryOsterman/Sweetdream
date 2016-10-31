@@ -58,4 +58,26 @@ function LocationDelay($loc, $del)
     echo '<script type="text/javascript">setTimeout(function(){window.top.location="' . $loc . '"} ,' . $del . ');</script>';
 }
 
+function httpAuthentication()
+{
+    require_once('./config/db.init.php');
 
+    function authenticate()
+    {
+        header('WWW-Authenticate: Basic realm="Simple Authentication System"');
+        header('HTTP/1.0 401 Unauthorized');
+        echo "Вы должны ввести корректный логин и пароль";
+        exit;
+    }
+
+    if (!isset($_SERVER['PHP_AUTH_USER'])) {
+        authenticate();
+        return false;
+    } elseif (($_SERVER['PHP_AUTH_USER'] == ADM_USER) &&
+        ($_SERVER['PHP_AUTH_PW'] == ADM_PASSWORD)
+    ) {
+        return true;
+    }
+
+    exit;
+}

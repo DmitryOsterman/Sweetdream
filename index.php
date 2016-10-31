@@ -33,3 +33,4 @@ if (isset($section)) {
 }
 
 require_once('./page/footer.php');
+ob_end_flush();

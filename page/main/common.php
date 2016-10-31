@@ -12,11 +12,6 @@
             require_once('./authorization/formUser.php');
             break;
 
-//        case 'addUser':
-//            renderUserForm();
-//            require_once('./authorization/formUser.php');
-//            break;
-
         case 'exit':
             destroySession();
             header('Location:' . $_SERVER['PHP_SELF']);

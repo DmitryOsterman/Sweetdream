@@ -1,4 +1,5 @@
-admin/db.init
+admin/config/db.init.php
+config/db.init.php
 .idea/
 .DS_Store
 img/.DS_Store

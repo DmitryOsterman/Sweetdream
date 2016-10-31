@@ -36,7 +36,7 @@ h4, h3, h2, h1 {
     height: 8px;
     /*background: url("../img/tri8bottom.png") repeat-x;*/
     background-color: #e6faf5;
-
+    text-align: center;
 }
 
 .header {
@@ -516,7 +516,6 @@ input.find {
     width: inherit;
     height: 40px;
     background-color: #e6faf5;
-    text-align: center;
 }
 
 /*================================================*/
@@ -679,4 +678,8 @@ input.find {
 .amount,
 .price {
     text-align: center;
+}
+
+.visitCounter {
+    float: right
 }
